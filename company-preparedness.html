@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Preparedness | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@600;700&family=Recursive:wght@500&display=swap" rel="stylesheet">
+    <style>
+        .prep-page {
+            --primary: var(--yak-bg);
+            --blue: var(--yak-accent);
+            --carbon: #0d0f11;
+            --white: var(--yak-text);
+            color: var(--yak-text);
+            font-family: 'Recursive', system-ui, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(209,122,50,0.16), transparent 45%), var(--yak-bg);
+        }
+        .prep-hero {
+            position: relative;
+            padding: 140px 5% 90px;
+            background: linear-gradient(180deg, rgba(12,10,8,0.82), rgba(12,10,8,0.96)), url('images/hangar.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        .prep-hero::after {
+            content: "";
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 80px 80px;
+            opacity: 0.25;
+        }
+        .prep-hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; display: grid; gap: 14px; }
+        .prep-eyebrow { letter-spacing: 4px; text-transform: uppercase; color: var(--blue); font-size: 12px; margin: 0; }
+        .prep-hero h1 { font-family: 'Tektur', system-ui, sans-serif; margin: 6px 0 10px; font-size: clamp(32px, 4vw, 50px); letter-spacing: 1px; color: var(--white); }
+        .prep-hero p { margin: 0; max-width: 780px; line-height: 1.7; }
+        .pulse-line {
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--blue), transparent);
+            background-size: 200% 100%;
+            animation: pulseLine 2.8s ease-in-out infinite;
+        }
+        @keyframes pulseLine { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .modules { padding: 60px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; background: #16100b; }
+        .mod-card {
+            position: relative;
+            padding: 16px;
+            background: var(--yak-panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 12px;
+            box-shadow: 0 14px 30px rgba(0,0,0,0.55);
+        }
+        .mod-card h3 { margin: 8px 0 8px; font-family: 'Tektur', sans-serif; letter-spacing: 1px; color: var(--blue); }
+        .mod-card p { margin: 0; color: #dfe4ec; line-height: 1.6; }
+        .fleet {
+            padding: 60px 5%;
+            background: linear-gradient(180deg, #111418, #0b0d10);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+        .fleet-status {
+            background: #0f1318;
+            border: 1px solid rgba(0,209,255,0.28);
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .fleet-title { font-family: 'Tektur', sans-serif; letter-spacing: 1px; color: var(--white); margin: 0 0 8px; }
+        .bar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 12px; }
+        .bar { background: #0c0f13; border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 10px; }
+        .bar-label { color: #9fb3c8; font-size: 12px; }
+        .bar-fill { height: 8px; margin-top: 6px; border-radius: 999px; background: linear-gradient(90deg, #f0c36d 0%, #d17a32 100%); box-shadow: 0 0 12px rgba(240,195,109,0.28); }
+        .terminal {
+            background: #0a0d11;
+            border: 1px solid rgba(0,209,255,0.24);
+            border-radius: 12px;
+            padding: 12px;
+            color: #00ff41;
+            font-family: 'Recursive', monospace;
+            height: 260px;
+            overflow: hidden;
+        }
+        .map-panel {
+            position: relative;
+            background: #0f0a06;
+            border: 1px solid rgba(240,195,109,0.24);
+            border-radius: 12px;
+            padding: 12px;
+            min-height: 260px;
+            overflow: hidden;
+        }
+        .map-bg { position: absolute; inset: 0; background: url('images/map-dark.png'); background-size: cover; opacity: 0.28; }
+        .hub { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 14px rgba(209,122,50,0.8); }
+        .arc { position: absolute; border: 1px solid rgba(240,195,109,0.28); border-radius: 50%; opacity: 0; animation: arcShoot 2.2s ease-out forwards; }
+        @keyframes arcShoot { from { transform: scale(0.6); opacity: 0.6; } to { transform: scale(1.6); opacity: 0; } }
+        .crate {
+            background: #0f1318;
+            border: 1px solid rgba(0,209,255,0.24);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .crate h3 { margin: 0 0 10px; color: var(--white); font-family: 'Tektur', sans-serif; }
+        .cta-prep {
+            padding: 70px 5% 90px;
+            text-align: center;
+            background: #0c0a08;
+        }
+        .cta-prep .box {
+            display: inline-block;
+            padding: 22px 24px;
+            border: 1px solid rgba(240,195,109,0.24);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.45);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+        }
+        .cta-prep h3 { margin: 0 0 10px; color: var(--white); font-family: 'Tektur', sans-serif; }
+        .cta-prep p { margin: 0 0 14px; color: #dfe4ec; }
+        .cta-btn { padding: 12px 22px; border: 0; background: linear-gradient(120deg, #f0c36d, #d17a32); color: #0c0a08; font-weight: 800; letter-spacing: 2px; border-radius: 10px; cursor: pointer; box-shadow: 0 0 16px rgba(240,195,109,0.35); }
+    </style>
+</head>
+<body class="dropdown-page prep-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="prep-hero">
+    <div class="prep-hero-inner">
+        <p class="prep-eyebrow">GLOBAL LOGISTICS DASHBOARD</p>
+        <h1>READY BEFORE THE FIRST CALL.</h1>
+        <p>Our infrastructure is built for the unexpected. When disaster strikes, YAKSHA is already in motion.</p>
+        <div class="pulse-line"></div>
+    </div>
+</section>
+
+<!-- READINESS PROTOCOL -->
+<section class="modules">
+    <div class="mod-card">
+        <h3>01. THE GLOBAL PULSE</h3>
+        <p>24/7/365 standby monitored by AI for seismic and atmospheric anomalies.</p>
+    </div>
+    <div class="mod-card">
+        <h3>02. FLEET INVENTORY</h3>
+        <p>Asset dashboards show air-lift readiness with battery/status bars at 100%.</p>
+    </div>
+    <div class="mod-card">
+        <h3>03. LOGISTICS & SUPPLY</h3>
+        <p>Mobile Repair Units (MRU) keep spares, treads, and antennas mission-ready in the field.</p>
+    </div>
+    <div class="mod-card">
+        <h3>04. REDUNDANCY SYSTEMS</h3>
+        <p>If-Then safety protocols for signal loss, hardware damage, and fallback comms.</p>
+    </div>
+</section>
+
+<!-- FLEET + TERMINAL + MAP -->
+<section class="fleet">
+    <div class="fleet-status">
+        <h3 class="fleet-title">MARS - Mission Asset Readiness Status</h3>
+        <div class="bar-grid">
+            <div class="bar"><div class="bar-label">FLEET AVAILABILITY</div><div class="bar-fill" style="width:94%;"></div></div>
+            <div class="bar"><div class="bar-label">RESPONSE LEAD TIME</div><div class="bar-fill" style="width:88%;"></div></div>
+            <div class="bar"><div class="bar-label">SATELLITE COVERAGE</div><div class="bar-fill" style="width:100%;"></div></div>
+        </div>
+    </div>
+    <div class="terminal" id="prepTerminal"></div>
+    <div class="map-panel" id="mapPanel">
+        <div class="map-bg"></div>
+        <div class="hub" style="top:40%;left:42%;"></div>
+        <div class="hub" style="top:55%;left:68%;"></div>
+        <div class="hub" style="top:32%;left:28%;"></div>
+    </div>
+</section>
+
+<!-- DEPLOYMENT CRATE -->
+<section class="fleet">
+    <div class="crate">
+        <h3>DEPLOYMENT CRATE // READY FOR AIR-DROP</h3>
+        <model-viewer
+            src="3Dmodels/demo.glb"
+            camera-controls
+            auto-rotate
+            exposure="1.1"
+            shadow-intensity="1"
+            environment-image="neutral"
+            style="width:100%;height:340px; background: radial-gradient(circle at 50% 30%, rgba(0,209,255,0.18), #0b0d10); border-radius: 12px; border:1px solid rgba(0,209,255,0.3);">
+        </model-viewer>
+        <p>Ruggedized crate opens to lift rover with spares, batteries, antennas. Ready for air-drop in 15 minutes.</p>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-prep">
+    <div class="box">
+        <h3>BUILD RESILIENCE BEFORE CRISIS STRIKES</h3>
+        <p>Current Status: DEFCON 1 (Operational) // Fleet Availability: 94% // Response Lead Time: &lt; 120 Minutes</p>
+        <button class="cta-btn" onclick="location.href='contact.html'">PARTNER WITH YAKSHA</button>
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Terminal health checks
+const prepTerminal = document.getElementById('prepTerminal');
+if (prepTerminal) {
+    const checks = [
+        '[CHECKING_BATTERY_ARRAY... OK]',
+        '[COMM_SATELLITE_LINK... ACTIVE]',
+        '[DIAGNOSTIC_COMPLETE... 0_ERRORS]',
+        '[MRU_STATUS... GREEN]',
+        '[READY_STATE... TRUE]',
+        '[PACKING_CRATE... SEALED]'
+    ];
+    let idx = 0;
+    setInterval(() => {
+        const line = document.createElement('div');
+        line.textContent = checks[idx % checks.length];
+        prepTerminal.appendChild(line);
+        prepTerminal.scrollTop = prepTerminal.scrollHeight;
+        idx++;
+    }, 900);
+}
+
+// Map arcs
+const mapPanel = document.getElementById('mapPanel');
+if (mapPanel) {
+    const arcs = [];
+    function spawnArc() {
+        const arc = document.createElement('div');
+        arc.className = 'arc';
+        const size = 80 + Math.random()*60;
+        arc.style.width = size + 'px';
+        arc.style.height = size + 'px';
+        arc.style.left = (20 + Math.random()*60) + '%';
+        arc.style.top = (20 + Math.random()*50) + '%';
+        mapPanel.appendChild(arc);
+        setTimeout(() => arc.remove(), 2200);
+    }
+    setInterval(spawnArc, 1400);
+}
+</script>
+
+
+</body>
+</html>

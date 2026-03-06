@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lidar Sensor | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .lidar-wrapper {
+            padding: 60px 10%;
+            background-color: #050505;
+            color: #f9f1e5;
+        }
+
+        .lidar-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+
+        .lidar-viewport {
+            position: relative;
+            background: radial-gradient(circle at top, #3b1f0a 0%, #050505 55%, #000 100%);
+            border-radius: 10px;
+            border: 1px solid #b56a2b;
+            box-shadow: 0 0 35px rgba(255, 140, 0, 0.35);
+            overflow: hidden;
+        }
+
+        #lidarCanvas {
+            width: 100%;
+            height: 420px;
+            display: block;
+        }
+
+        .lidar-overlay {
+            position: absolute;
+            top: 14px;
+            left: 18px;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #ffbf7a;
+        }
+
+        .lidar-overlay-bar {
+            margin-top: 6px;
+            width: 220px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff7a1a 0%, #ffbf7a 40%, rgba(255,255,255,0.05) 100%);
+        }
+
+        .lidar-stats-panel {
+            padding: 18px 20px;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #141414 0%, #0b0502 60%);
+            border: 1px solid #b56a2b;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.75);
+        }
+
+        .lidar-stats-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #ffbf7a;
+            margin-bottom: 10px;
+        }
+
+        .lidar-stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .lidar-stat-label {
+            color: #b9b9b9;
+        }
+
+        .lidar-stat-value {
+            color: #ff944a;
+            font-weight: 600;
+        }
+
+        .lidar-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            background: rgba(0, 255, 128, 0.08);
+            border: 1px solid rgba(0, 210, 110, 0.5);
+            color: #8bffb5;
+        }
+
+        .lidar-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.9);
+        }
+
+        .lidar-footer-note {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #8e7c6a;
+        }
+
+        @media (max-width: 900px) {
+            .lidar-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #lidarCanvas {
+                height: 360px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <div class="nav-logo">
+                <a href="index.html">YAKSHA</a>
+            </div>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li class="dropdown" id="about-yaksha-dropdown">
+                        <a href="gps.html" id="about-yaksha-link">GPS</a>
+                    </li>
+
+                    <li class="dropdown" id="operations-dropdown">
+                        <a href="camera.html" id="operations-link">Camera</a>
+                    </li>
+
+                    <li class="dropdown" id="technology-dropdown">
+                        <a href="lidar-sensor.html" id="technology-link">Lidar Sensor</a>
+                    </li>
+
+                    <li class="dropdown" id="impact-dropdown">
+                        <a href="gas-sensor.html" id="impact-link">Gas Sensor</a>
+                    </li>
+
+                    <li class="dropdown" id="media-dropdown">
+                        <a href="thermal-sensor.html" id="media-link">Thermal Sensor</a>
+                    </li>
+
+                    <li class="dropdown" id="sensors-dropdown">
+                        <a href="javascript:void(0)">Sensors</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="lidar-sensor.html">Lidar Sensor</a></li>
+                            <li><a href="camera.html">Camera</a></li>
+                            <li><a href="gps.html">GPS</a></li>
+                            <li><a href="gas-sensor.html">Gas Sensor</a></li>
+                            <li><a href="thermal-sensor.html">Thermal Sensor</a></li>
+                        </ul>
+                    </li>
+
+                    <li id="login-logout-btn">
+                        <a href="logout.php" class="login-btn">Logout</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Lidar Sensor</h1>
+        <p class="tagline">Live Environment Scan</p>
+    </section>
+
+    <!-- LIVE LIDAR INTERFACE -->
+    <section class="lidar-wrapper">
+        <div class="lidar-grid">
+            <div class="lidar-viewport">
+                <div class="lidar-overlay">
+                    DATA PROCESSING <span id="lidar-progress">42%</span>
+                    <div class="lidar-overlay-bar"></div>
+                </div>
+                <canvas id="lidarCanvas"></canvas>
+            </div>
+
+            <aside class="lidar-stats-panel">
+                <div class="lidar-stats-title">Environment Scan</div>
+                <div style="margin-bottom: 10px;">
+                    <span class="lidar-status-pill" id="lidar-status-pill">
+                        <span class="lidar-status-dot"></span>
+                        <span id="lidar-status-text">Streaming</span>
+                    </span>
+                </div>
+                <div class="lidar-stat-row">
+                    <span class="lidar-stat-label">Last scan time</span>
+                    <span class="lidar-stat-value" id="lidar-last-time">—</span>
+                </div>
+                <div class="lidar-stat-row">
+                    <span class="lidar-stat-label">Scan file</span>
+                    <span class="lidar-stat-value" id="lidar-scan-path">—</span>
+                </div>
+                <div class="lidar-stat-row">
+                    <span class="lidar-stat-label">Notes</span>
+                    <span class="lidar-stat-value" id="lidar-notes">Waiting for data…</span>
+                </div>
+                <div class="lidar-stat-row">
+                    <span class="lidar-stat-label">Points (simulated)</span>
+                    <span class="lidar-stat-value" id="lidar-point-count">28,000+</span>
+                </div>
+                <p class="lidar-footer-note">
+                    When the Raspberry Pi pushes scans to <code>update_lidar.php</code>,
+                    this panel will show the latest file and timestamp in real time.
+                </p>
+            </aside>
+        </div>
+    </section>
+
+<script>
+// Check if user is logged in
+fetch('check_session.php')
+    .then(response => response.json())
+    .then(data => {
+        if (!data.logged_in) {
+            window.location.href = 'login.html';
+        }
+    })
+    .catch(error => {
+        console.error('Error checking session:', error);
+    });
+
+// Dropdown menu functionality
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        const dropdown = this.nextElementSibling;
+        
+        if (dropdown && dropdown.style.display === 'none') {
+            return;
+        }
+        
+        if (this.href && !this.href.includes('javascript:void(0)')) {
+            return;
+        }
+        
+        e.preventDefault();
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        if (dropdown) {
+            dropdown.style.display =
+                dropdown.style.display === 'flex' ? 'none' : 'flex';
+        }
+    });
+});
+
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Simple fake 3D point-cloud style animation on canvas
+const canvas = document.getElementById('lidarCanvas');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    const POINT_COUNT = 4500;
+    const points = [];
+    let angle = 0;
+
+    function resize() {
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+        canvas.width = width * window.devicePixelRatio;
+        canvas.height = height * window.devicePixelRatio;
+        ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+    }
+
+    function initPoints() {
+        points.length = 0;
+        for (let i = 0; i < POINT_COUNT; i++) {
+            const radius = Math.random() * 1.4;
+            const theta = Math.random() * Math.PI * 2;
+            const y = (Math.random() - 0.5) * 1.4;
+            const x = Math.cos(theta) * radius;
+            const z = Math.sin(theta) * radius;
+            points.push({ x, y, z, b: Math.random() });
+        }
+    }
+
+    function draw() {
+        if (!width || !height) return;
+        ctx.fillStyle = '#050505';
+        ctx.fillRect(0, 0, width, height);
+
+        const cx = width / 2;
+        const cy = height / 2 + 20;
+
+        const rot = angle;
+        const sin = Math.sin(rot);
+        const cos = Math.cos(rot);
+
+        for (const p of points) {
+            const xr = p.x * cos - p.z * sin;
+            const zr = p.x * sin + p.z * cos + 2.2;
+
+            const f = 260 / zr;
+            const sx = cx + xr * f;
+            const sy = cy + p.y * f;
+
+            if (sx < 0 || sx > width || sy < 0 || sy > height) continue;
+
+            const depth = Math.max(0, Math.min(1, 1 - (zr - 1.8)));
+            const alpha = 0.15 + depth * 0.6;
+            const size = 1 + depth * 2.2;
+
+            ctx.fillStyle = `rgba(255, ${120 + depth * 100}, 40, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(sx, sy, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        angle += 0.004;
+        requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => {
+        resize();
+        initPoints();
+    });
+
+    resize();
+    initPoints();
+    requestAnimationFrame(draw);
+}
+
+// Poll backend for latest lidar scan metadata
+function refreshLidarMeta() {
+    fetch('get_lidar.php')
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success || !data.data) {
+                document.getElementById('lidar-status-text').textContent = 'Waiting for scans';
+                return;
+            }
+            const d = data.data;
+            document.getElementById('lidar-last-time').textContent = d.time || '—';
+            document.getElementById('lidar-scan-path').textContent = d.scan_path || '—';
+            document.getElementById('lidar-notes').textContent = d.notes || '—';
+            document.getElementById('lidar-status-text').textContent = 'Live feed';
+        })
+        .catch(() => {
+            const el = document.getElementById('lidar-status-text');
+            if (el) el.textContent = 'Offline';
+        });
+}
+
+setInterval(refreshLidarMeta, 4000);
+refreshLidarMeta();
+</script>
+
+</body>
+</html>

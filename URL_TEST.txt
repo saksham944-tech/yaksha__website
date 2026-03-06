@@ -1,0 +1,18 @@
+TRY THESE URLs IN YOUR BROWSER:
+
+1. http://localhost/yaksha/yaksha2/yaksha_website/index.html
+2. http://localhost/yaksha/yaksha2/yaksha_website/login.html
+3. http://localhost/yaksha/yaksha2/yaksha_website/signup.html
+4. http://127.0.0.1/yaksha/yaksha2/yaksha_website/index.html
+
+IF THESE DON'T WORK, CHECK:
+
+1. In XAMPP Control Panel, click "Config" next to Apache
+2. Select "httpd.conf"
+3. Look for "DocumentRoot" - it should say: DocumentRoot "C:/xampp/htdocs"
+4. Make sure Apache is running (green in XAMPP)
+
+ALTERNATIVE: Try accessing via file explorer:
+- Navigate to: C:\xampp\htdocs\yaksha\yaksha2\yaksha_website
+- Double-click index.html to open in browser
+- This will show file:/// path but confirms files exist

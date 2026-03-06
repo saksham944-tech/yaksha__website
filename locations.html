@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Locations | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</head>
+<body class="dropdown-page yak-locations-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="yak-hero">
+    <div class="yak-hero-inner">
+        <div class="yak-hero-panel">
+            <div class="label">GLOBAL FOOTPRINT</div>
+            <div class="value">STATIONED WHERE IT MATTERS.</div>
+            <div class="meta">From urban centers to remote outposts, YAKSHA is positioned for immediate mobilization.</div>
+        </div>
+        <div>
+            <p class="yak-eyebrow">STRATEGIC COMMAND CENTER</p>
+            <h1 class="yak-hero-title">WORLDWIDE DEPLOYMENT.</h1>
+            <p class="yak-hero-sub">
+                Dark cartography with brown underground DNA—mapping hubs, labs, and active response zones.
+            </p>
+        </div>
+    </div>
+</section>
+
+<div class="yak-divider"></div>
+
+<!-- Network Status -->
+<section class="yak-section">
+    <h2 class="yak-h2">01. Network Status — Operational Reach</h2>
+    <p class="yak-lead">Interactive map of hubs and live units (POC).</p>
+
+    <div id="yakLocationsMap" class="yak-heatmap">
+        <svg viewBox="0 0 1000 520" role="img" aria-label="Global locations map">
+            <path class="yak-map" d="M66,330 C120,250 160,230 214,220 C290,205 310,175 350,150 C420,110 500,105 560,120 C600,130 635,140 670,160 C730,195 790,200 850,225 C920,265 930,320 905,360 C870,420 780,440 710,435 C660,433 620,410 575,405 C520,398 470,410 420,420 C360,432 330,455 270,455 C220,455 160,430 130,400 C88,360 60,350 66,330 Z"/>
+        </svg>
+        <div class="yak-pin yak-live-dot" style="left:60%; top:46%;"></div>
+        <div class="yak-pin yak-live-dot" style="left:30%; top:42%;"></div>
+        <div class="yak-pin yak-live-dot" style="left:76%; top:38%;"></div>
+    </div>
+    <p id="yakCoordReadout" style="margin-top:8px; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px; color:rgba(233,223,209,0.9);">
+        CURSOR_COORDS: ---
+    </p>
+
+    <button id="yakLiveToggle" type="button" class="yak-btn" style="margin-top:8px;">SHOW_LIVE_UNITS</button>
+</section>
+
+<!-- Central Command & Hubs -->
+<section class="yak-section">
+    <h2 class="yak-h2">02. Central Command &amp; Regional Hubs</h2>
+    <p class="yak-lead">Technical asset cards for HQ and rapid-response hubs.</p>
+
+    <div class="yak-event-grid">
+        <article class="yak-event-pass">
+            <h3 style="margin:0 0 6px; font-family:'Michroma', system-ui, sans-serif; letter-spacing:2px;">HUB_ID: IND-ND-01 (HQ)</h3>
+            <p style="margin:0 0 6px; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px;">
+                STATUS: OPERATIONAL &nbsp;&nbsp;//&nbsp;&nbsp; CAPACITY: 400+ Units
+            </p>
+            <p style="margin:0; color:rgba(233,223,209,0.86);">
+                SPECIALIZATION: AI Training &amp; Core Mechatronics<br>
+                RESPONSE_TIME: &lt; 20 mins (Regional)
+            </p>
+        </article>
+
+        <article class="yak-event-pass">
+            <h3 style="margin:0 0 6px; font-family:'Michroma', system-ui, sans-serif; letter-spacing:2px;">HUB_ID: UK-LON-02</h3>
+            <p style="margin:0 0 6px; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px;">
+                STATUS: STANDBY &nbsp;&nbsp;//&nbsp;&nbsp; CAPACITY: 150 Units
+            </p>
+            <p style="margin:0; color:rgba(233,223,209,0.86);">
+                SPECIALIZATION: Urban collapse &amp; flood response.
+            </p>
+        </article>
+
+        <article class="yak-event-pass">
+            <h3 style="margin:0 0 6px; font-family:'Michroma', system-ui, sans-serif; letter-spacing:2px;">HUB_ID: US-SF-01</h3>
+            <p style="margin:0 0 6px; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px;">
+                STATUS: OPERATIONAL &nbsp;&nbsp;//&nbsp;&nbsp; CAPACITY: 220 Units
+            </p>
+            <p style="margin:0; color:rgba(233,223,209,0.86);">
+                SPECIALIZATION: R&amp;D, wildfire reconnaissance, industrial sites.
+            </p>
+        </article>
+    </div>
+</section>
+
+<!-- Facility Globe (POC) -->
+<section class="yak-section">
+    <h2 class="yak-h2">03. Facility Globe — Global Mesh-Link Network</h2>
+    <p class="yak-lead">3D planetary representation (POC).</p>
+
+    <div class="yak-model" data-yak-model>
+        <div class="yak-model-path" aria-hidden="true"></div>
+        <model-viewer
+            src="3Dmodels/design.glb"
+            camera-controls
+            interaction-prompt="none"
+            exposure="0.9"
+            shadow-intensity="0.85"
+            alt="Facility globe (POC)">
+        </model-viewer>
+        <div class="yak-model-caption">ARCS: DATA_PATHS // LABEL: GLOBAL MESH-LINK NETWORK</div>
+    </div>
+</section>
+
+<!-- Action: Establish a Local Hub -->
+<section class="yak-section">
+    <h2 class="yak-h2">04. Establish a Local Hub</h2>
+    <p class="yak-lead">For governments or corporations seeking to host a YAKSHA station.</p>
+
+    <div class="yak-panel">
+        <button class="yak-btn primary" onclick="location.href='partner-with-us.html'">PROPOSE A NEW STRATEGIC HUB</button>
+    </div>
+</section>
+
+<script src="impact-pages.js"></script>
+</body>
+</html>

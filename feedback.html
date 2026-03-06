@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dropdown-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" style="min-height:70vh;">
+    <h1>FEEDBACK</h1>
+    <p class="tagline">Your voice helps us respond better</p>
+</section>
+
+<!-- FEEDBACK INTRO -->
+<section>
+    <h2>We Value Your Feedback</h2>
+    <p>
+        Feedback helps YAKSHA improve its systems, response mechanisms,
+        communication, and overall effectiveness. Whether it’s a
+        suggestion, concern, or appreciation — we want to hear it.
+    </p>
+</section>
+
+<!-- FEEDBACK FORM -->
+<section>
+    <div class="values-grid">
+
+        <div class="value-card">
+            <h3>Submit Your Feedback</h3>
+
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name (optional)">
+                <input type="email" placeholder="Your Email (optional)">
+                
+                <select>
+                    <option selected disabled>Type of Feedback</option>
+                    <option>Suggestion</option>
+                    <option>Concern</option>
+                    <option>Complaint</option>
+                    <option>Appreciation</option>
+                </select>
+
+                <textarea rows="5" placeholder="Write your feedback here..."></textarea>
+
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+
+        <div class="value-card">
+            <h3>Confidential & Responsible</h3>
+            <p>
+                All feedback is handled with care and confidentiality.
+                Submissions are reviewed by the concerned teams to ensure
+                appropriate and timely action.
+            </p>
+
+            <p>
+                For urgent matters, please use the
+                <strong>Emergency Helpline</strong>.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <h2>Together, We Can Improve Response</h2>
+    <button onclick="location.href='index.html'">
+        Return to Home
+    </button>
+</section>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Equipment & Tools | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        .equip-page{
+            --charcoal:#262626;
+            --safety:#ff6b00;
+            --steel:#4682b4;
+            --white:#f5f5f5;
+            background: radial-gradient(circle at 20% 20%, rgba(240,195,109,0.08), transparent 45%),
+                        linear-gradient(180deg, #0c0a08, #16100b);
+            color: var(--yak-text);
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            overflow-x:hidden;
+        }
+        .equip-page::before{
+            content:"";
+            position:fixed; inset:0;
+            background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size: 90px 90px;
+            opacity: 0.08;
+            pointer-events:none;
+            z-index:0;
+        }
+        .wrap{ position:relative; z-index:1; }
+        .hero2{
+            padding: 140px 5% 70px;
+        }
+        .hero2 .eyebrow{
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(240,195,109,0.85);
+            font-size: 12px;
+            margin: 0 0 10px;
+        }
+        .hero2 h1{
+            margin:0 0 10px;
+            font-family: "Archivo Black", system-ui, sans-serif;
+            letter-spacing: 2px;
+            font-size: clamp(32px, 4vw, 52px);
+            color: rgba(240,195,109,0.92);
+        }
+        .hero2 p{ margin:0; max-width: 860px; line-height: 1.7; color: rgba(233,223,209,0.82); }
+
+        .arsenal{
+            padding: 0 5% 70px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+            align-items:start;
+        }
+        .panel{
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(240,195,109,0.16);
+            border-radius: 14px;
+            padding: 14px;
+            position:relative;
+            overflow:hidden;
+        }
+        .panel h2{
+            margin:0 0 10px;
+            font-family: "Archivo Black", system-ui, sans-serif;
+            letter-spacing: 1px;
+            color: rgba(240,195,109,0.92);
+            font-size: 18px;
+        }
+        .panel p{ margin:0; line-height: 1.7; color: rgba(233,223,209,0.78); }
+        .sheet{
+            margin-top: 12px;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(240,195,109,0.12);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .row{ display:flex; justify-content:space-between; gap:10px; padding: 6px 0; border-bottom: 1px dashed rgba(240,195,109,0.10); }
+        .row:last-child{ border-bottom:none; }
+
+        .toolGrid{
+            padding: 0 5% 70px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .tool{
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(240,195,109,0.14);
+            border-radius: 14px;
+            padding: 14px;
+            position:relative;
+            overflow:hidden;
+        }
+        .tool .img{
+            height: 140px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/tunnel.jpg');
+            background-size: cover;
+            background-position:center;
+            position:relative;
+            overflow:hidden;
+        }
+        .tool:nth-child(2) .img{ background-image: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/smoke-room.jpg'); }
+        .tool:nth-child(3) .img{ background-image: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/fpv.jpg'); }
+        .tool h3{ margin: 10px 0 6px; color: rgba(240,195,109,0.9); letter-spacing: 1px; font-size: 14px; }
+        .tool p{ margin:0; color: rgba(233,223,209,0.78); line-height:1.6; font-size: 13px; }
+        .tool .img::after{
+            content:"STRESS MAP";
+            position:absolute;
+            right: 10px; bottom: 10px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 6px 10px;
+            border: 1px solid rgba(240,195,109,0.14);
+            background: rgba(0,0,0,0.55);
+            color: rgba(240,195,109,0.85);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: all 0.25s ease;
+        }
+        .tool:hover .img::after{ opacity: 1; transform: translateY(0); }
+        .tool:hover .img{ filter: saturate(1.1) contrast(1.08); }
+
+        .exploded{
+            padding: 0 5% 70px;
+            position:relative;
+        }
+        .explodeStage{
+            position: sticky;
+            top: 110px;
+            height: 340px;
+            border-radius: 16px;
+            border: 1px solid rgba(240,195,109,0.14);
+            background: rgba(0,0,0,0.45);
+            overflow:hidden;
+            display:grid;
+            place-items:center;
+        }
+        .layer{
+            position:absolute;
+            width: 78%;
+            height: 68%;
+            border-radius: 14px;
+            border: 1px solid rgba(240,195,109,0.14);
+            background: radial-gradient(circle at 30% 30%, rgba(240,195,109,0.10), rgba(0,0,0,0.75));
+            transition: transform 0.2s ease;
+        }
+        .layer.l2{ width: 72%; height: 62%; opacity: 0.85; }
+        .layer.l3{ width: 66%; height: 56%; opacity: 0.75; }
+        .explodeLabel{
+            position:absolute; left: 16px; bottom: 16px;
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            letter-spacing: 2px;
+            font-size: 12px;
+            color: rgba(240,195,109,0.85);
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(240,195,109,0.14);
+            padding: 8px 10px;
+            border-radius: 10px;
+        }
+        .spacer{ height: 820px; }
+
+        .swap{
+            padding: 0 5% 70px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+            align-items:start;
+        }
+        .mount{
+            height: 240px;
+            border-radius: 16px;
+            border: 2px dashed rgba(240,195,109,0.22);
+            background: rgba(0,0,0,0.45);
+            display:grid;
+            place-items:center;
+            position:relative;
+            overflow:hidden;
+        }
+        .mount .hint{
+            color: rgba(233,223,209,0.72);
+            letter-spacing: 1px;
+            text-align:center;
+            padding: 0 14px;
+        }
+        .toolIconRow{ display:flex; gap: 10px; flex-wrap:wrap; margin-top: 12px; }
+        .icon{
+            width: 86px;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(240,195,109,0.14);
+            background: rgba(0,0,0,0.45);
+            cursor: grab;
+            user-select:none;
+            text-align:center;
+            color: rgba(240,195,109,0.9);
+        }
+        .spark{
+            position:absolute;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(255,107,0,0.9);
+            box-shadow: 0 0 18px rgba(255,107,0,0.8);
+            opacity: 0;
+            pointer-events:none;
+        }
+        .spark.active{ animation: spark 0.6s ease-out; }
+        @keyframes spark{ 0%{opacity:1; transform: scale(1);} 100%{opacity:0; transform: scale(6);} }
+
+        .engage{
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(240,195,109,0.18);
+            background: linear-gradient(120deg, rgba(240,195,109,0.22), rgba(209,122,50,0.18));
+            color: rgba(233,223,209,0.92);
+            cursor:pointer;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="dropdown-page equip-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<div class="wrap">
+    <section class="hero2">
+        <p class="eyebrow">THE ARSENAL</p>
+        <h1>BUILT FOR THE EXTREME. ENGINEERED FOR THE IMPOSSIBLE.</h1>
+        <p>Industrial-grade hardware designed to survive where electronics usually go to die — brute force, precision engineering, modular payloads.</p>
+    </section>
+
+    <section class="arsenal">
+        <div class="panel">
+            <h2>01. THE CHASSIS</h2>
+            <p>The unbreakable framework built for impacts and heat cycling — the rover’s skeleton.</p>
+            <div style="margin-top:12px;">
+                <model-viewer
+                    src="3Dmodels/demo.glb"
+                    camera-controls
+                    auto-rotate
+                    exposure="1.05"
+                    shadow-intensity="1"
+                    environment-image="neutral"
+                    style="width:100%;height:300px;border-radius:12px;border:1px solid rgba(240,195,109,0.16);background: radial-gradient(circle at 40% 30%, rgba(240,195,109,0.12), rgba(0,0,0,0.75));">
+                </model-viewer>
+            </div>
+            <div class="sheet">
+                <div class="row"><span>Material</span><span style="color:rgba(240,195,109,0.9)">7075 Aluminum + Carbon Fiber</span></div>
+                <div class="row"><span>Operating Temp</span><span style="color:rgba(240,195,109,0.9)">-40°C to +120°C</span></div>
+                <div class="row"><span>IP Rating</span><span style="color:rgba(240,195,109,0.9)">IP68 (10m)</span></div>
+            </div>
+        </div>
+        <div class="panel">
+            <h2>02. TRACTION SYSTEMS</h2>
+            <p>All-terrain dominance: treads and torque profiles tuned per surface.</p>
+            <div class="sheet">
+                <div class="row"><span>Torque</span><span style="color:rgba(240,195,109,0.9)">450Nm per drive unit</span></div>
+                <div class="row"><span>Mode</span><span style="color:rgba(240,195,109,0.9)">MUD / SNOW / RUBBLE</span></div>
+                <div class="row"><span>Grip</span><span style="color:rgba(240,195,109,0.9)">Adaptive tread tension</span></div>
+            </div>
+            <div style="margin-top:12px;display:grid;gap:10px;">
+                <div class="tool"><div class="img"></div><h3>Mud Displacement</h3><p>High-torque bite under low traction.</p></div>
+                <div class="tool"><div class="img"></div><h3>Snow Shear</h3><p>Stable rolling over powder and ice.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="exploded">
+        <h2 style="font-family:'Archivo Black';letter-spacing:1px;color:rgba(240,195,109,0.92);margin:0 0 10px;">EXPLODED VIEW // ASSEMBLY LINE</h2>
+        <p style="margin:0 0 12px;color:rgba(233,223,209,0.78);max-width:860px;line-height:1.7;">
+            Scroll to disassemble (Z-axis feel). Keeps the “engineering complexity” vibe without heavy 3D dependencies.
+        </p>
+        <div class="explodeStage" id="explodeStage">
+            <div class="layer l1" id="l1"></div>
+            <div class="layer l2" id="l2"></div>
+            <div class="layer l3" id="l3"></div>
+            <div class="explodeLabel">Z-AXIS DISASSEMBLY</div>
+        </div>
+        <div class="spacer"></div>
+    </section>
+
+    <section class="toolGrid">
+        <div class="tool"><div class="img"></div><h3>MANIPULATORS</h3><p>Hydraulic cutters, spreaders, precision grippers. Hover shows stress overlay.</p></div>
+        <div class="tool"><div class="img"></div><h3>POWER & ENDURANCE</h3><p>Hot-swappable batteries with fast changeover under PPE gloves.</p></div>
+        <div class="tool"><div class="img"></div><h3>OPTICS & SENSORS</h3><p>Macro zoom + thermal + lidar integration for the operator HUD.</p></div>
+    </section>
+
+    <section class="swap">
+        <div class="panel">
+            <h2>THE TOOL SWAPPER // MPS</h2>
+            <p>Drag tools onto the Universal Mount. Snap-to-grid with a spark. (Demo interaction)</p>
+            <div class="mount" id="mount">
+                <div class="hint" id="mountHint">DROP TOOL HERE<br/>MODULAR PAYLOAD SYSTEM (MPS)</div>
+                <div class="spark" id="spark"></div>
+            </div>
+            <div class="toolIconRow">
+                <div class="icon" draggable="true" data-tool="DRILL">DRILL</div>
+                <div class="icon" draggable="true" data-tool="CAMERA">CAMERA</div>
+                <div class="icon" draggable="true" data-tool="MED_TRAY">MED TRAY</div>
+            </div>
+            <button class="engage" id="engageBtn">ENGAGE SYSTEMS</button>
+        </div>
+        <div class="panel">
+            <h2>DURABILITY // TORTURE TEST</h2>
+            <p>We broke prototypes in the lab so nothing breaks in the field.</p>
+            <div class="sheet">
+                <div class="row"><span>DROP TEST</span><span style="color:rgba(240,195,109,0.9)">3m onto concrete</span></div>
+                <div class="row"><span>FIRE TEST</span><span style="color:rgba(240,195,109,0.9)">Flame wall drive-through</span></div>
+                <div class="row"><span>WATER TEST</span><span style="color:rgba(240,195,109,0.9)">Submerged operation</span></div>
+                <div class="row"><span>PRESSURE TEST</span><span style="color:rgba(240,195,109,0.9)">Static chassis load</span></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Exploded view scroll (parallax separation)
+(function exploded(){
+    const s = document.getElementById('explodeStage');
+    const l1 = document.getElementById('l1');
+    const l2 = document.getElementById('l2');
+    const l3 = document.getElementById('l3');
+    if (!s || !l1 || !l2 || !l3) return;
+    function tick(){
+        const rect = s.getBoundingClientRect();
+        const viewMid = window.innerHeight * 0.5;
+        const p = Math.max(0, Math.min(1, (viewMid - rect.top) / (rect.height + 200)));
+        const spread = (p - 0.5) * 160;
+        l1.style.transform = `translate3d(0, ${-spread*0.6}px, 0)`;
+        l2.style.transform = `translate3d(0, ${spread*0.2}px, 0)`;
+        l3.style.transform = `translate3d(0, ${spread*0.75}px, 0)`;
+        requestAnimationFrame(tick);
+    }
+    tick();
+})();
+
+// Drag & drop tool swapper
+(function swapper(){
+    const mount = document.getElementById('mount');
+    const hint = document.getElementById('mountHint');
+    const spark = document.getElementById('spark');
+    if (!mount || !hint || !spark) return;
+
+    let current = null;
+
+    document.querySelectorAll('.icon').forEach(icon => {
+        icon.addEventListener('dragstart', (e) => {
+            current = icon.dataset.tool;
+            e.dataTransfer.setData('text/plain', current);
+        });
+    });
+
+    mount.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+    mount.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const tool = e.dataTransfer.getData('text/plain') || current;
+        if (!tool) return;
+        hint.innerHTML = `MOUNTED: <span style="color:rgba(255,107,0,0.95)">${tool}</span><br/>SNAP-TO-GRID: OK`;
+        const r = mount.getBoundingClientRect();
+        spark.style.left = (e.clientX - r.left) + 'px';
+        spark.style.top = (e.clientY - r.top) + 'px';
+        spark.classList.remove('active');
+        void spark.offsetWidth;
+        spark.classList.add('active');
+    });
+})();
+
+// Mechanical sound toggle (simple WebAudio)
+(function engageSound(){
+    const btn = document.getElementById('engageBtn');
+    if (!btn) return;
+    function thump(){
+        try{
+            const ac = new (window.AudioContext || window.webkitAudioContext)();
+            const o = ac.createOscillator();
+            const g = ac.createGain();
+            o.type = 'sawtooth';
+            o.frequency.value = 120;
+            g.gain.value = 0.0001;
+            o.connect(g); g.connect(ac.destination);
+            o.start();
+            g.gain.exponentialRampToValueAtTime(0.14, ac.currentTime + 0.03);
+            o.frequency.exponentialRampToValueAtTime(60, ac.currentTime + 0.22);
+            g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.35);
+            o.stop(ac.currentTime + 0.36);
+        } catch {}
+    }
+    btn.addEventListener('click', () => {
+        thump();
+        btn.style.transform = 'translateY(1px)';
+        setTimeout(() => btn.style.transform = 'translateY(0)', 90);
+    });
+})();
+</script>
+
+
+</body>
+</html>

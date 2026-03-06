@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Training & Drills | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        .train-page {
+            --primary: var(--yak-bg);
+            --cyber: var(--yak-accent-2);
+            --grid: rgba(240,195,109,0.08);
+            --blue: var(--yak-accent);
+            color: var(--yak-text);
+            font-family: 'Roboto Mono', ui-monospace, monospace;
+            background: linear-gradient(180deg, #0c0a08, #16100b);
+        }
+        .train-hero {
+            position: relative;
+            padding: 140px 5% 90px;
+            background: linear-gradient(180deg, rgba(12,10,8,0.82), rgba(12,10,8,0.96)), url('images/sim-lab.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        .train-hero::after {
+            content: "";
+            position: absolute; inset: 0;
+            background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 80px 80px;
+            opacity: 0.35;
+        }
+        .train-hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+        .train-eyebrow { text-transform: uppercase; letter-spacing: 4px; color: var(--cyber); font-size: 12px; margin: 0; }
+        .train-hero h1 { font-family: 'Orbitron', system-ui, sans-serif; margin: 8px 0 12px; font-size: clamp(34px, 4vw, 52px); letter-spacing: 2px; }
+        .train-hero p { margin: 0; max-width: 760px; line-height: 1.7; }
+        .modules { padding: 60px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .mod {
+            background: var(--yak-panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+        }
+        .mod h3 { margin: 6px 0 8px; font-family: 'Orbitron', sans-serif; color: var(--cyber); letter-spacing: 1px; }
+        .mod p { margin: 0; color: #dcdcdc; line-height: 1.6; }
+        .hud-section {
+            padding: 60px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            background: #0f0a06;
+        }
+        .target-overlay {
+            position: relative;
+            height: 280px;
+            border-radius: 12px;
+            background: url('images/drill-course.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            border: 1px solid rgba(240,195,109,0.22);
+        }
+        .overlay-box {
+            position: absolute;
+            border: 1px solid var(--cyber);
+            color: var(--cyber);
+            padding: 4px 6px;
+            font-size: 12px;
+            background: rgba(0,0,0,0.45);
+            animation: lockon 3s linear infinite;
+        }
+        .overlay-box:nth-child(1) { top: 30%; left: 18%; }
+        .overlay-box:nth-child(2) { top: 55%; left: 60%; animation-delay: 0.5s; }
+        .overlay-box:nth-child(3) { top: 68%; left: 32%; animation-delay: 1s; }
+        @keyframes lockon { 0% { box-shadow: 0 0 0 0 rgba(255,211,0,0.4); } 70% { box-shadow: 0 0 0 12px rgba(255,211,0,0); } 100% { box-shadow: 0 0 0 0 rgba(255,211,0,0); } }
+        .stress {
+            background: var(--yak-panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .stress input[type=range] { width: 100%; }
+        .stress-visual {
+            margin-top: 10px;
+            height: 200px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(0,168,255,0.35), rgba(0,0,0,0.6));
+            transition: filter 0.3s ease;
+        }
+        .neural {
+            background: var(--yak-panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .neural-net {
+            position: relative;
+            height: 220px;
+            background: radial-gradient(circle at 50% 50%, rgba(240,195,109,0.14), #0c0a08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .node { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--yak-accent-2); box-shadow: 0 0 12px rgba(240,195,109,0.55); }
+        .line { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, #00a8ff, transparent); }
+        .pod {
+            padding: 60px 5%;
+            background: #0f0a06;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+        .pod-panel {
+            background: var(--yak-panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .pod-panel h3 { margin: 0 0 10px; font-family: 'Orbitron', sans-serif; color: var(--blue); }
+        .cta-train {
+            padding: 70px 5% 90px;
+            text-align: center;
+            background: #0c0a08;
+        }
+        .cta-box {
+            display: inline-block;
+            padding: 22px 24px;
+            border: 1px solid rgba(240,195,109,0.24);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.45);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+        }
+        .cta-box h3 { margin: 0 0 8px; font-family: 'Orbitron', sans-serif; color: #fff; }
+        .cta-box p { margin: 0 0 12px; color: #dedede; }
+        .cta-btn { border: 0; padding: 12px 22px; background: linear-gradient(120deg, #f0c36d, #d17a32); color: #0c0a08; font-weight: 800; letter-spacing: 2px; border-radius: 10px; cursor: pointer; box-shadow: 0 0 16px rgba(240,195,109,0.35); }
+    </style>
+</head>
+<body class="dropdown-page train-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="train-hero">
+    <div class="train-hero-inner">
+        <p class="train-eyebrow">FLIGHT SIM / TRAINING ACADEMY</p>
+        <h1>WE TRAIN FOR THE UNTHINKABLE.</h1>
+        <p>10,000+ hours of simulated chaos. 1,000+ field drills. Zero room for error.</p>
+    </div>
+</section>
+
+<!-- THE CRUCIBLE -->
+<section class="modules">
+    <div class="mod">
+        <h3>01. THE SIMULATION LAB</h3>
+        <p>Digital twin torture tests before hardware ever leaves the bench.</p>
+    </div>
+    <div class="mod">
+        <h3>02. FIELD DRILLS</h3>
+        <p>Real mud, fire, ice, rubble. Every week. Every rover.</p>
+    </div>
+    <div class="mod">
+        <h3>03. PILOT CERTIFICATION</h3>
+        <p>Human-in-the-loop operators with graded stress and time-to-lock metrics.</p>
+    </div>
+    <div class="mod">
+        <h3>04. AI LEARNING CURVE</h3>
+        <p>Neural evolution that learns from every failed drill so it never fails in the field.</p>
+    </div>
+</section>
+
+<!-- HUD TRAINER -->
+<section class="hud-section">
+    <div class="target-overlay">
+        <div class="overlay-box">PATH CONFIDENCE: 92%</div>
+        <div class="overlay-box">HAZARD LOCK</div>
+        <div class="overlay-box">TARGET LOCK</div>
+    </div>
+    <div class="stress">
+        <p class="train-eyebrow" style="color:#fff;">STRESS LEVEL</p>
+        <input type="range" id="stressSlider" min="0" max="100" value="30">
+        <div class="stress-visual" id="stressVisual"></div>
+        <p style="margin-top:8px;">Drag to see environment shift from lab clean to extreme.</p>
+    </div>
+    <div class="neural">
+        <p class="train-eyebrow" style="color:#fff;">NEURAL HEATMAP</p>
+        <div class="neural-net" id="neuralNet"></div>
+    </div>
+</section>
+
+<!-- TRAINING POD -->
+<section class="pod">
+    <div class="pod-panel">
+        <h3>VIRTUAL TRAINING POD</h3>
+        <model-viewer
+            src="3Dmodels/demo.glb"
+            camera-controls
+            auto-rotate
+            shadow-intensity="1"
+            exposure="1.1"
+            environment-image="neutral"
+            style="width:100%;height:340px; background: radial-gradient(circle at 50% 30%, rgba(0,168,255,0.2), #0f0f0f); border-radius: 12px; border:1px solid rgba(0,168,255,0.35);">
+        </model-viewer>
+    </div>
+    <div class="pod-panel">
+        <h3>DRILL PROFILE // LESSON PLAN</h3>
+        <p>Exercise: Code Red: Structural Collapse</p>
+        <p>Variable: Zero-visibility (Smoke/Dust)</p>
+        <p>Objective: Locate 5 biological heat signatures in &lt; 8 minutes.</p>
+        <p>Success Rate: 99.2% across all certified YAKSHA pilots.</p>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-train">
+    <div class="cta-box">
+        <h3>DO YOU HAVE WHAT IT TAKES TO COMMAND A YAKSHA?</h3>
+        <p>Join the Academy. Apply for certification or volunteer training.</p>
+        <button class="cta-btn" onclick="location.href='careers.html'">APPLY FOR CERTIFICATION</button>
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Stress slider visual
+const stressSlider = document.getElementById('stressSlider');
+const stressVisual = document.getElementById('stressVisual');
+if (stressSlider && stressVisual) {
+    stressSlider.addEventListener('input', () => {
+        const v = stressSlider.value;
+        const blur = v / 12;
+        const sat = 1 + v / 120;
+        stressVisual.style.filter = `blur(${blur}px) saturate(${sat})`;
+        stressVisual.style.background = v > 60
+            ? 'linear-gradient(180deg, rgba(255,120,0,0.35), rgba(0,0,0,0.7))'
+            : 'linear-gradient(180deg, rgba(0,168,255,0.35), rgba(0,0,0,0.6))';
+    });
+}
+
+// Neural net pulses
+const neuralNet = document.getElementById('neuralNet');
+if (neuralNet) {
+    const nodes = [];
+    for (let i = 0; i < 18; i++) {
+        const n = document.createElement('div');
+        n.className = 'node';
+        n.style.left = (10 + Math.random()*80) + '%';
+        n.style.top = (10 + Math.random()*80) + '%';
+        neuralNet.appendChild(n);
+        nodes.push(n);
+    }
+    setInterval(() => {
+        nodes.forEach((n, idx) => {
+            setTimeout(() => {
+                n.style.transform = 'scale(1.4)';
+                n.style.opacity = '0.6';
+                setTimeout(() => {
+                    n.style.transform = 'scale(1)';
+                    n.style.opacity = '1';
+                }, 240);
+            }, idx * 30);
+        });
+    }, 1800);
+}
+</script>
+
+
+</body>
+</html>

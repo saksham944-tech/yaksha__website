@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Command & Control Systems | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        .c2-page{
+            --obsidian:#050505;
+            --cyan:#00ffff;
+            --violet:#4b0082;
+            --healthy:#00ff00;
+            --panel: rgba(10,8,6,0.78);
+            --line: rgba(0,255,255,0.16);
+            background: radial-gradient(circle at 20% 20%, rgba(209,122,50,0.10), transparent 42%), var(--yak-bg);
+            color: var(--yak-text);
+            font-family: Inter, system-ui, sans-serif;
+            overflow-x:hidden;
+        }
+        /* CRT scanlines */
+        .c2-page::before{
+            content:"";
+            position:fixed; inset:0;
+            background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 1px, transparent 1px, transparent 4px);
+            opacity:0.06;
+            pointer-events:none;
+            mix-blend-mode: overlay;
+            z-index:0;
+        }
+        /* Faint bitstream */
+        .bitstream{
+            position:fixed; inset:0;
+            pointer-events:none;
+            opacity:0.06;
+            z-index:0;
+            overflow:hidden;
+        }
+        .bitstream .col{
+            position:absolute;
+            top:-120%;
+            width:18px;
+            color: var(--cyan);
+            font-family: 'Share Tech Mono', ui-monospace, monospace;
+            font-size: 12px;
+            line-height: 16px;
+            white-space: pre;
+            animation: fall 26s linear infinite;
+        }
+        @keyframes fall { to { transform: translateY(240%); } }
+
+        .c2-wrap{ position:relative; z-index:1; }
+        .c2-hero{
+            padding:140px 5% 40px;
+            display:grid;
+            grid-template-columns: minmax(0,1.1fr) minmax(0,0.9fr);
+            gap:22px;
+            align-items: start;
+        }
+        .c2-eyebrow{
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            letter-spacing:4px;
+            color: rgba(0,255,255,0.85);
+            text-transform:uppercase;
+            margin:0 0 8px;
+            font-size:12px;
+        }
+        .c2-hero h1{
+            margin:0 0 10px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            font-size: clamp(34px, 4vw, 52px);
+            letter-spacing: 2px;
+            color: rgba(0,255,255,0.95);
+            text-shadow: 0 0 18px rgba(0,255,255,0.16);
+        }
+        .c2-sub{ margin:0; color: rgba(233,223,209,0.82); line-height:1.7; max-width: 720px; }
+        .bios{
+            margin-top:14px;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(0,255,255,0.22);
+            border-radius: 12px;
+            padding: 14px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            color: rgba(0,255,255,0.92);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+        }
+        .bios .row{ display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px dashed rgba(0,255,255,0.14); }
+        .bios .row:last-child{ border-bottom:none; }
+        .bios .k{ opacity:0.7; }
+        .bios .v{ color: rgba(240,195,109,0.92); }
+
+        .modules{
+            padding: 20px 5% 60px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        .mod{
+            position:relative;
+            background: var(--panel);
+            border: 1px solid rgba(0,255,255,0.16);
+            border-radius: 14px;
+            padding: 16px;
+            overflow:hidden;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+        }
+        .mod::before{
+            content:"";
+            position:absolute; inset:0;
+            border-radius: inherit;
+            background: radial-gradient(circle at 20% 20%, rgba(75,0,130,0.18), transparent 55%);
+            opacity:0.6;
+            pointer-events:none;
+        }
+        .mod h2{
+            position:relative;
+            margin:0 0 10px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: rgba(0,255,255,0.9);
+        }
+        .mod p{ position:relative; margin:0 0 12px; line-height:1.7; color: rgba(233,223,209,0.78); }
+        .boot{
+            position:relative;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(0,255,255,0.14);
+            border-radius: 12px;
+            padding: 12px;
+            height: 190px;
+            overflow:hidden;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            color: rgba(0,255,255,0.8);
+        }
+        .boot .line{ opacity:0.85; margin-bottom:6px; }
+
+        .fpv{
+            position:relative;
+            height: 210px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,255,0.18);
+            background: linear-gradient(180deg, rgba(0,255,255,0.06), transparent), url('images/fpv.jpg');
+            background-size: cover;
+            background-position:center;
+            overflow:hidden;
+        }
+        .fpv::after{
+            content:"FPV_FEED // 60FPS // HDR";
+            position:absolute; left:12px; bottom:12px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            letter-spacing:2px;
+            font-size:12px;
+            padding: 6px 10px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(0,255,255,0.18);
+            color: rgba(0,255,255,0.9);
+        }
+
+        .latencyBox{
+            display:grid;
+            grid-template-columns: 1fr;
+            gap:10px;
+        }
+        .latencyTop{
+            display:flex;
+            justify-content:space-between;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            letter-spacing:1px;
+            font-size:12px;
+            color: rgba(0,255,255,0.85);
+        }
+        #latencyCanvas{
+            width:100%;
+            height:160px;
+            background: rgba(0,0,0,0.55);
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,255,0.16);
+        }
+
+        .swarm{
+            position:relative;
+            height: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,255,0.16);
+            background: rgba(0,0,0,0.55);
+            overflow:hidden;
+        }
+        .swarm svg{ position:absolute; inset:0; }
+        .lock{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(0,255,255,0.16);
+        }
+        .lockIcon{
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,255,0.24);
+            display:grid; place-items:center;
+            color: rgba(0,255,255,0.9);
+            box-shadow: 0 0 18px rgba(0,255,255,0.18);
+            position:relative;
+            overflow:hidden;
+        }
+        .lockIcon::after{
+            content:"";
+            position:absolute; inset:-50%;
+            background: linear-gradient(120deg, transparent, rgba(0,255,255,0.22), transparent);
+            animation: shimmer 2.4s linear infinite;
+        }
+        @keyframes shimmer{ to { transform: translateX(60%); } }
+
+        .team{
+            padding: 20px 5% 70px;
+        }
+        .team h2{
+            margin:0 0 12px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            letter-spacing:2px;
+            color: rgba(240,195,109,0.92);
+        }
+        .teamGrid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .person{
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(240,195,109,0.18);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .person .r{ color: rgba(233,223,209,0.74); font-size: 13px; margin-top: 4px; }
+
+        .protocol{
+            padding: 0 5% 70px;
+        }
+        .steps{
+            display:grid;
+            gap: 10px;
+            max-width: 900px;
+        }
+        .step{
+            position:relative;
+            padding: 12px 14px 12px 22px;
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(0,255,255,0.12);
+            border-radius: 12px;
+        }
+        .step::before{
+            content:"";
+            position:absolute;
+            left: 10px; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, rgba(0,255,255,0.2), rgba(240,195,109,0.22));
+        }
+        .step .t{
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            color: rgba(0,255,255,0.9);
+            letter-spacing: 1px;
+        }
+        .step .d{ color: rgba(233,223,209,0.78); margin-top: 4px; }
+
+        .datahub{
+            padding: 0 5% 70px;
+            display:grid;
+            grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .hubCard{
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(0,255,255,0.16);
+            border-radius: 14px;
+            padding: 14px;
+        }
+        #hubCanvas{
+            width:100%;
+            height:320px;
+            border-radius: 12px;
+            background: radial-gradient(circle at 50% 40%, rgba(0,255,255,0.12), rgba(0,0,0,0.7));
+            border: 1px solid rgba(0,255,255,0.16);
+        }
+        .hubLabel{
+            margin-top: 10px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            color: rgba(0,255,255,0.85);
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
+
+        .consoleWrap{
+            padding: 0 5% 110px;
+        }
+        .console{
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(0,255,255,0.18);
+            border-radius: 14px;
+            overflow:hidden;
+            max-width: 980px;
+        }
+        .consoleHeader{
+            padding: 10px 12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            background: rgba(0,255,255,0.05);
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            color: rgba(0,255,255,0.85);
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
+        .consoleOut{
+            padding: 12px;
+            height: 170px;
+            overflow:auto;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            color: rgba(0,255,255,0.85);
+            font-size: 13px;
+        }
+        .consoleIn{
+            display:flex;
+            gap: 8px;
+            padding: 10px 12px;
+            border-top: 1px solid rgba(0,255,255,0.12);
+            background: rgba(0,0,0,0.65);
+        }
+        .consoleIn input{
+            flex:1;
+            background: transparent;
+            border: 1px solid rgba(0,255,255,0.18);
+            color: rgba(0,255,255,0.9);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            outline:none;
+        }
+        .consoleIn button{
+            background: linear-gradient(120deg, rgba(0,255,255,0.25), rgba(240,195,109,0.20));
+            border: 1px solid rgba(0,255,255,0.18);
+            color: rgba(233,223,209,0.92);
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor:pointer;
+            font-family:'Share Tech Mono', ui-monospace, monospace;
+            letter-spacing: 1px;
+        }
+
+        .crosshair{
+            position:fixed;
+            width: 26px; height: 26px;
+            border: 1px solid rgba(0,255,255,0.35);
+            border-radius: 50%;
+            pointer-events:none;
+            z-index: 50;
+            transform: translate(-999px, -999px);
+        }
+        .crosshair::before,.crosshair::after{
+            content:"";
+            position:absolute;
+            left:50%; top:50%;
+            width: 22px; height: 1px;
+            background: rgba(0,255,255,0.35);
+            transform: translate(-50%,-50%);
+        }
+        .crosshair::after{
+            width:1px; height: 22px;
+        }
+        .bracket{
+            position:fixed;
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,49,49,0.65);
+            border-right: 0; border-bottom: 0;
+            pointer-events:none;
+            z-index: 50;
+            transform: translate(-999px, -999px);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        @media (max-width: 980px){
+            .c2-hero{ grid-template-columns: 1fr; }
+            .datahub{ grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="dropdown-page c2-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<div class="bitstream" id="bitstream"></div>
+<div class="crosshair" id="crosshair"></div>
+<div class="bracket" id="bracket"></div>
+
+<div class="c2-wrap">
+    <section class="c2-hero">
+        <div>
+            <p class="c2-eyebrow">THE NERVOUS SYSTEM</p>
+            <h1>INTELLIGENCE UNTETHERED.</h1>
+            <p class="c2-sub">
+                The software backbone that turns raw data into life-saving decisions.
+                Built for dead zones, dust, and chaos — designed like an OS, operated like an aircraft.
+            </p>
+
+            <div class="bios">
+                <div class="row"><span class="k">Kernel</span><span class="v">YAKSHA-RTOS (Real-Time Operating System)</span></div>
+                <div class="row"><span class="k">Bandwidth</span><span class="v">Optimised for 128kbps Sat-Links</span></div>
+                <div class="row"><span class="k">AI Engine</span><span class="v">Neural Inference at the Edge (No Cloud)</span></div>
+                <div class="row"><span class="k">Encryption</span><span class="v">AES-256 GCM Military Grade</span></div>
+            </div>
+        </div>
+
+        <div class="mod">
+            <h2>01. THE CORE OS</h2>
+            <p><span class="kw">YAKSHA-OS</span>: The logic layer that schedules sensors, fuses frames, and prioritizes threats.</p>
+            <div class="boot" id="bootSeq"></div>
+        </div>
+    </section>
+
+    <section class="modules">
+        <article class="mod">
+            <h2>02. REMOTE PILOT INTERFACE</h2>
+            <p><span class="kw">Zero-Latency</span> control with FPV + overlays. Operators see what the rover sees, in real time.</p>
+            <div class="fpv"></div>
+            <div style="height:10px"></div>
+            <div class="latencyBox">
+                <div class="latencyTop">
+                    <span id="latencyLabel">LATENCY: 14ms</span>
+                    <span>CONNECTION: <span style="color:rgba(0,255,0,0.9)">STABLE</span></span>
+                </div>
+                <canvas id="latencyCanvas"></canvas>
+            </div>
+        </article>
+
+        <article class="mod">
+            <h2>03. SWARM COORDINATION</h2>
+            <p><span class="kw">Multi-Unit</span> sync without a single point of failure. Nodes connect, reroute, and heal.</p>
+            <div class="swarm" id="swarm"></div>
+        </article>
+
+        <article class="mod">
+            <h2>04. SECURITY & ENCRYPTION</h2>
+            <p><span class="kw">Hardened</span> links protect rescue data from interception, spoofing, and jamming.</p>
+            <div class="lock">
+                <div class="lockIcon">🔒</div>
+                <div>
+                    <div style="font-family:'Share Tech Mono', ui-monospace, monospace; letter-spacing:2px; color:rgba(0,255,255,0.9);">SECURE_BACKHAUL</div>
+                    <div style="color:rgba(233,223,209,0.78); margin-top:4px;">Key rotation + authenticated packets + tamper alerts.</div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="team">
+        <h2>SYSTEMS ARCHITECTS</h2>
+        <div class="teamGrid">
+            <div class="person"><div style="font-family:'Share Tech Mono';color:rgba(0,255,255,0.85);letter-spacing:1px;">OS + SENSOR BUS</div><div class="r">Real-time scheduling, fusion pipelines, watchdogs.</div></div>
+            <div class="person"><div style="font-family:'Share Tech Mono';color:rgba(0,255,255,0.85);letter-spacing:1px;">UI + PILOT HUD</div><div class="r">Overlays, latency shaping, mission playback.</div></div>
+            <div class="person"><div style="font-family:'Share Tech Mono';color:rgba(0,255,255,0.85);letter-spacing:1px;">SECURITY</div><div class="r">Encryption, auth, key rotation, secure boot.</div></div>
+            <div class="person"><div style="font-family:'Share Tech Mono';color:rgba(0,255,255,0.85);letter-spacing:1px;">SWARM / NETWORKING</div><div class="r">Self-healing mesh logic and route recovery.</div></div>
+        </div>
+    </section>
+
+    <section class="protocol">
+        <div class="mod" style="max-width:980px;">
+            <h2>PROTOCOL // COMMAND WORKFLOW</h2>
+            <div class="steps">
+                <div class="step"><div class="t">Ingestion</div><div class="d">Raw LiDAR + Thermal collected at 60fps.</div></div>
+                <div class="step"><div class="t">Processing</div><div class="d">On-board AI filters noise from survivor signals.</div></div>
+                <div class="step"><div class="t">Transmission</div><div class="d"><span class="kw">Encrypted</span> data sent via Mesh-Radio to the Command Center.</div></div>
+                <div class="step"><div class="t">Action</div><div class="d">Pilot receives 3D reconstruction for navigation.</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="datahub">
+        <div class="hubCard">
+            <h2>THE DATA HUB</h2>
+            <p>Abstract core visualized as a holographic point sphere. Drag to distort, release to reform.</p>
+            <canvas id="hubCanvas"></canvas>
+            <div class="hubLabel">CENTRAL INTELLIGENCE PROCESSING UNIT</div>
+        </div>
+        <div class="hubCard">
+            <h2>REMOTE PILOT TABLET</h2>
+            <p>Mission layers: FPV, thermal, lidar, gas, and comms — fused into one cockpit.</p>
+            <div class="fpv" style="height:320px;"></div>
+        </div>
+    </section>
+
+    <section class="consoleWrap">
+        <div class="console">
+            <div class="consoleHeader">
+                <span>LIVE CONSOLE</span>
+                <span style="color:rgba(240,195,109,0.85)">C2 v4.0.1</span>
+            </div>
+            <div class="consoleOut" id="consoleOut"></div>
+            <div class="consoleIn">
+                <input id="consoleIn" placeholder="TYPE: STATUS or VERSION or HELP" autocomplete="off" />
+                <button id="consoleSend">EXEC</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Bitstream background
+(function initBitstream(){
+    const host = document.getElementById('bitstream');
+    if (!host) return;
+    const cols = 34;
+    for (let i=0;i<cols;i++){
+        const col = document.createElement('div');
+        col.className = 'col';
+        col.style.left = (i * (100/cols)) + '%';
+        col.style.animationDelay = (-Math.random()*26) + 's';
+        col.style.animationDuration = (22 + Math.random()*18) + 's';
+        let txt = '';
+        for (let j=0;j<120;j++){
+            const n = Math.floor(Math.random()*256).toString(16).toUpperCase().padStart(2,'0');
+            txt += '0x' + n + '\n';
+        }
+        col.textContent = txt;
+        host.appendChild(col);
+    }
+})();
+
+// Boot sequence
+(function boot(){
+    const el = document.getElementById('bootSeq');
+    if (!el) return;
+    const lines = [
+        'BOOT: YAKSHA-OS // INIT',
+        'LOADING KERNEL: YAKSHA-RTOS ... OK',
+        'SENSOR BUS: LIDAR/THERMAL/GAS ... ONLINE',
+        'COMMS: MESH RADIO ... STABLE',
+        'SECURE BOOT: VERIFIED ... OK',
+        'EDGE INFERENCE: READY',
+        'HUD PIPELINE: START',
+        'MISSION CLOCK: SYNC',
+        'ALL SYSTEMS NOMINAL'
+    ];
+    let idx = 0;
+    const t = setInterval(() => {
+        const line = document.createElement('div');
+        line.className = 'line';
+        line.textContent = lines[idx % lines.length];
+        el.appendChild(line);
+        el.scrollTop = el.scrollHeight;
+        idx++;
+        if (idx > 18) clearInterval(t);
+    }, 180);
+})();
+
+// Latency sine wave (sharper on fast mouse moves)
+(function latencyGraph(){
+    const c = document.getElementById('latencyCanvas');
+    const label = document.getElementById('latencyLabel');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    let sharp = 0.2;
+    let lastX = 0, lastY = 0;
+    window.addEventListener('mousemove', (e) => {
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        const speed = Math.min(1, Math.sqrt(dx*dx+dy*dy) / 60);
+        sharp = 0.2 + speed * 1.6;
+    });
+    function draw(){
+        const w = c.width = c.clientWidth;
+        const h = c.height = c.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        ctx.strokeStyle = 'rgba(0,255,255,0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const t = Date.now()/700;
+        for (let x=0;x<w;x++){
+            const n = x/w * Math.PI*2;
+            const y = h/2 + Math.sin(n*2 + t*2) * (h*0.18) * (0.7 + sharp*0.25) + Math.sin(n*8 + t*4) * (h*0.03) * sharp;
+            x===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+        // baseline
+        ctx.strokeStyle = 'rgba(240,195,109,0.22)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, h/2);
+        ctx.lineTo(w, h/2);
+        ctx.stroke();
+        // update label
+        if (label) {
+            const ms = Math.max(8, Math.round(14 + sharp*6));
+            label.textContent = 'LATENCY: ' + ms + 'ms';
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+// Swarm node web
+(function swarm(){
+    const host = document.getElementById('swarm');
+    if (!host) return;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 100 100');
+    svg.setAttribute('preserveAspectRatio','none');
+    host.appendChild(svg);
+
+    const nodes = Array.from({length: 8}).map(() => ({
+        x: 10 + Math.random()*80,
+        y: 10 + Math.random()*80,
+        alive: true
+    }));
+
+    function render(){
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+        // lines
+        for (let i=0;i<nodes.length;i++){
+            for (let j=i+1;j<nodes.length;j++){
+                if (!nodes[i].alive || !nodes[j].alive) continue;
+                if (Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y) < 40){
+                    const line = document.createElementNS(svg.namespaceURI,'line');
+                    line.setAttribute('x1', nodes[i].x);
+                    line.setAttribute('y1', nodes[i].y);
+                    line.setAttribute('x2', nodes[j].x);
+                    line.setAttribute('y2', nodes[j].y);
+                    line.setAttribute('stroke', 'rgba(0,255,255,0.22)');
+                    line.setAttribute('stroke-width', '0.6');
+                    svg.appendChild(line);
+                }
+            }
+        }
+        // nodes
+        nodes.forEach(n => {
+            const c = document.createElementNS(svg.namespaceURI,'circle');
+            c.setAttribute('cx', n.x);
+            c.setAttribute('cy', n.y);
+            c.setAttribute('r', n.alive ? '2.1' : '2.1');
+            c.setAttribute('fill', n.alive ? 'rgba(0,255,255,0.85)' : 'rgba(255,49,49,0.75)');
+            svg.appendChild(c);
+        });
+    }
+
+    // randomly drop a node then heal it back
+    setInterval(() => {
+        const idx = Math.floor(Math.random()*nodes.length);
+        nodes[idx].alive = false;
+        render();
+        setTimeout(() => { nodes[idx].alive = true; render(); }, 1100);
+    }, 1700);
+
+    render();
+})();
+
+// Crosshair tracking keyword lock
+(function crosshairTrack(){
+    const crosshair = document.getElementById('crosshair');
+    const bracket = document.getElementById('bracket');
+    const kws = Array.from(document.querySelectorAll('.kw'));
+    if (!crosshair || !bracket || kws.length === 0) return;
+    function tick(){
+        const mid = window.innerHeight * 0.35;
+        let best = null;
+        let bestDist = Infinity;
+        for (const el of kws){
+            const r = el.getBoundingClientRect();
+            const cy = r.top + r.height/2;
+            const d = Math.abs(cy - mid);
+            if (d < bestDist){
+                bestDist = d;
+                best = r;
+            }
+        }
+        if (best){
+            crosshair.style.transform = `translate(${best.left + best.width/2}px, ${best.top + best.height/2}px) translate(-50%,-50%)`;
+            bracket.style.transform = `translate(${best.left - 12}px, ${best.top - 12}px)`;
+            bracket.style.opacity = bestDist < 140 ? '1' : '0';
+        }
+        requestAnimationFrame(tick);
+    }
+    tick();
+})();
+
+// 3D Data Hub (2D projection sphere + turbulence)
+(function dataHub(){
+    const canvas = document.getElementById('hubCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let dragging = false;
+    let vx = 0, vy = 0;
+    let rotX = 0.6, rotY = 0.2;
+    let last = {x:0,y:0};
+    const pts = Array.from({length: 520}).map(() => {
+        // random point on sphere
+        const u = Math.random();
+        const v = Math.random();
+        const theta = 2*Math.PI*u;
+        const phi = Math.acos(2*v - 1);
+        const r = 1;
+        return {
+            x: r * Math.sin(phi) * Math.cos(theta),
+            y: r * Math.sin(phi) * Math.sin(theta),
+            z: r * Math.cos(phi),
+            jitter: Math.random()*0.6
+        };
+    });
+
+    function rot(p){
+        // turbulence
+        const t = Date.now()/900;
+        const j = dragging ? 0.22 : 0.08;
+        const tx = Math.sin(t + p.jitter) * j;
+        const ty = Math.cos(t*1.1 + p.jitter) * j;
+
+        let x = p.x + tx;
+        let y = p.y + ty;
+        let z = p.z;
+
+        // rotate around Y
+        let cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        let x1 = x*cosY + z*sinY;
+        let z1 = -x*sinY + z*cosY;
+        // rotate around X
+        let cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        let y2 = y*cosX - z1*sinX;
+        let z2 = y*sinX + z1*cosX;
+        return {x:x1,y:y2,z:z2};
+    }
+
+    function draw(){
+        const w = canvas.width = canvas.clientWidth;
+        const h = canvas.height = canvas.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        const cx = w/2, cy = h/2;
+        const scale = Math.min(w,h) * 0.33;
+        // sort by depth
+        const proj = pts.map(p => {
+            const r = rot(p);
+            const depth = (r.z + 2.2);
+            const px = cx + (r.x * scale) / depth;
+            const py = cy + (r.y * scale) / depth;
+            return {px,py,z:r.z,alpha: Math.max(0.12, Math.min(1, (r.z+1.2)/2.2))};
+        }).sort((a,b)=>a.z-b.z);
+
+        for (const p of proj){
+            ctx.fillStyle = `rgba(0,255,255,${0.25 + p.alpha*0.55})`;
+            ctx.beginPath();
+            ctx.arc(p.px, p.py, 1.2 + p.alpha*1.8, 0, Math.PI*2);
+            ctx.fill();
+        }
+
+        // outer glow ring
+        ctx.strokeStyle = 'rgba(240,195,109,0.18)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(cx, cy, scale*0.78, 0, Math.PI*2);
+        ctx.stroke();
+
+        if (!dragging){
+            rotY += 0.003;
+            rotX += 0.0015;
+        } else {
+            rotY += vx * 0.004;
+            rotX += vy * 0.004;
+            vx *= 0.92;
+            vy *= 0.92;
+        }
+        requestAnimationFrame(draw);
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        dragging = true;
+        last = {x: e.clientX, y: e.clientY};
+    });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - last.x;
+        const dy = e.clientY - last.y;
+        last = {x:e.clientX,y:e.clientY};
+        vx = dx / 20;
+        vy = dy / 20;
+    });
+    draw();
+})();
+
+// Live console easter egg
+(function liveConsole(){
+    const out = document.getElementById('consoleOut');
+    const inp = document.getElementById('consoleIn');
+    const btn = document.getElementById('consoleSend');
+    if (!out || !inp || !btn) return;
+
+    function write(prefix, text){
+        const line = document.createElement('div');
+        line.textContent = prefix + ' ' + text;
+        out.appendChild(line);
+        out.scrollTop = out.scrollHeight;
+    }
+
+    write('>', 'TYPE HELP FOR COMMANDS');
+
+    function handle(){
+        const cmd = (inp.value || '').trim().toUpperCase();
+        if (!cmd) return;
+        write('> ', cmd);
+        if (cmd === 'STATUS'){
+            write('<', 'ALL SYSTEMS NOMINAL // LINK: STABLE // LAT: 14ms');
+        } else if (cmd === 'VERSION'){
+            write('<', 'YAKSHA C2 v4.0.1 // BUILD: RTOS_EDGE');
+        } else if (cmd === 'HELP'){
+            write('<', 'COMMANDS: STATUS, VERSION, CLEAR');
+        } else if (cmd === 'CLEAR'){
+            out.innerHTML = '';
+        } else {
+            write('<', 'UNKNOWN COMMAND // TRY: HELP');
+        }
+        inp.value = '';
+    }
+
+    btn.addEventListener('click', handle);
+    inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handle();
+    });
+})();
+</script>
+
+
+</body>
+</html>

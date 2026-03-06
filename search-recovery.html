@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search & Recovery | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        .sr-page {
+            --ink: var(--yak-bg);
+            --phosphor: var(--yak-accent);
+            --cyan: var(--yak-accent-2);
+            --slate: #1c1f27;
+            color: var(--yak-text);
+            font-family: 'Share Tech Mono', ui-monospace, monospace;
+            background: radial-gradient(circle at 30% 20%, rgba(240,195,109,0.12), transparent 40%), var(--yak-bg);
+            overflow-x: hidden;
+        }
+        .sr-hero {
+            position: relative;
+            padding: 140px 5% 90px;
+            background: linear-gradient(180deg, rgba(12,10,8,0.85), rgba(12,10,8,0.95)), url('images/sonar-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        .sr-hero::after {
+            content: "";
+            position: absolute; inset: 0;
+            background: radial-gradient(rgba(240,195,109,0.06) 1px, transparent 0);
+            background-size: 5px 5px;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .sr-hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+        .sr-eyebrow { letter-spacing: 4px; color: var(--cyan); text-transform: uppercase; font-size: 12px; margin: 0; }
+        .sr-hero h1 { font-family: 'Exo 2', system-ui, sans-serif; margin: 8px 0 12px; font-size: clamp(34px, 4vw, 52px); color: #fff; letter-spacing: 2px; }
+        .sr-hero p { margin: 0; max-width: 760px; line-height: 1.7; }
+        .sonar-ripple {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(240,195,109,0.12), transparent 55%);
+            animation: pulseSonar 10s ease-in-out infinite;
+            mix-blend-mode: screen;
+            opacity: 0.35;
+        }
+        @keyframes pulseSonar { 0% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.05); opacity: 0.45; } 100% { transform: scale(0.8); opacity: 0.3; } }
+        .sr-grid {
+            position: relative;
+            padding: 70px 5% 40px;
+            background: linear-gradient(180deg, #0c0a08, #16100b);
+        }
+        .section-header { display: flex; gap: 12px; align-items: baseline; margin-bottom: 18px; }
+        .section-header h2 { margin: 0; font-family: 'Exo 2', sans-serif; letter-spacing: 1px; color: var(--cyan); }
+        .scan-grid {
+            position: relative;
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 16px;
+            padding: 18px;
+            background: #16100b;
+            box-shadow: 0 14px 32px rgba(0,0,0,0.55);
+            overflow: hidden;
+        }
+        .scan-grid::after {
+            content: "";
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(240,195,109,0.08) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(240,195,109,0.08) 1px, transparent 1px);
+            background-size: 90px 90px;
+            opacity: 0.4;
+            animation: gridShift 14s linear infinite;
+        }
+        @keyframes gridShift { to { transform: translate(45px, 45px); } }
+        .sr-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; position: relative; z-index: 1; }
+        .sr-card {
+            padding: 14px;
+            background: #17100c;
+            border: 1px solid rgba(240,195,109,0.18);
+            border-radius: 12px;
+        }
+        .sr-card h3 { margin: 6px 0 8px; color: #fff; font-family: 'Exo 2', sans-serif; }
+        .sr-card p { margin: 0; color: rgba(233,223,209,0.82); line-height: 1.6; }
+        .xray-wrap {
+            margin-top: 18px;
+            background: #0f0a06;
+            border-radius: 12px;
+            border: 1px solid rgba(240,195,109,0.22);
+            overflow: hidden;
+        }
+        .xray-stage { position: relative; height: 320px; }
+        .xray-before, .xray-after {
+            position: absolute; inset: 0;
+            background-size: cover;
+            background-position: center;
+        }
+        .xray-before { background-image: url('images/rubble-before.jpg'); }
+        .xray-after { background-image: url('images/rubble-gpr.jpg'); }
+        .xray-after { clip-path: inset(0 0 0 50%); }
+        .xray-slider { width: 100%; }
+        .pointcloud {
+            margin-top: 18px;
+            height: 260px;
+            background: radial-gradient(circle at 50% 50%, rgba(240,195,109,0.14), rgba(12,10,8,0.92));
+            border: 1px solid rgba(240,195,109,0.18);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .pc-dot { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--cyan); opacity: 0.8; transition: transform 0.6s ease, opacity 0.6s ease; }
+        .sensor-module {
+            padding: 60px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            background: linear-gradient(180deg, #0c0a08, #16100b);
+        }
+        .sensor-panel {
+            background: #17100c;
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .sensor-panel h3 { margin: 0 0 10px; color: #fff; font-family: 'Exo 2', sans-serif; }
+        .mode-switch { display: flex; gap: 8px; margin-bottom: 10px; }
+        .mode-btn { flex:1; padding: 10px; background: rgba(240,195,109,0.08); border: 1px solid rgba(240,195,109,0.26); color: var(--cyan); border-radius: 8px; cursor: pointer; }
+        .mode-btn.active { background: var(--phosphor); color: #0c0a08; border-color: var(--phosphor); box-shadow: 0 0 16px rgba(209,122,50,0.35); }
+        .folder {
+            background: #0f0a06;
+            border: 1px solid rgba(240,195,109,0.18);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 14px;
+        }
+        .folder h4 { margin: 0 0 8px; color: var(--phosphor); letter-spacing: 1px; }
+        .folder p { margin: 0 0 6px; color: rgba(233,223,209,0.82); }
+        .gauge {
+            margin-top: 16px;
+            height: 200px;
+            background: conic-gradient(from 180deg,
+                rgba(240,195,109,0.14) 0% 80%,
+                rgba(240,195,109,0.42) 80% 99%,
+                rgba(255,0,0,0.22) 99%);
+            border-radius: 50%;
+            position: relative;
+        }
+        .gauge::after {
+            content: "99.8% SITE COVERAGE GUARANTEED";
+            position: absolute; inset: 0;
+            display: grid; place-items: center;
+            color: #e9f7ff; font-size: 13px; text-align: center;
+            padding: 16px;
+        }
+        .coords-log { margin-top: 16px; background: #0f0a06; border: 1px solid rgba(240,195,109,0.18); border-radius: 10px; padding: 12px; }
+        .coords-log div { margin-bottom: 6px; color: rgba(233,223,209,0.82); }
+        @media(max-width: 900px){ .sr-hero { padding-top: 120px; } }
+    </style>
+</head>
+<body class="dropdown-page sr-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="sr-hero">
+    <div class="sr-hero-inner">
+        <p class="sr-eyebrow">DEEP SCAN OPERATIONS</p>
+        <h1>NOTHING REMAINS HIDDEN.</h1>
+        <p>Advanced sensory intelligence for the world's most complex recovery operations.</p>
+    </div>
+</section>
+<div class="sonar-ripple"></div>
+
+<!-- SYSTEMATIC SCAN -->
+<section class="sr-grid">
+    <div class="section-header">
+        <p class="sr-eyebrow">SYSTEMATIC SCAN</p>
+        <h2>Scanning the unseen</h2>
+    </div>
+    <div class="scan-grid">
+        <div class="sr-cards">
+            <div class="sr-card">
+                <h3>01. THE SEARCH GRID</h3>
+                <p>Pulsing sweep guarantees 100% coverage. Overlapping tiles prevent blind spots.</p>
+            </div>
+            <div class="sr-card">
+                <h3>02. SENSORY DOMINANCE</h3>
+                <p>GPR + chemical sniffers + multi-spectral lidar to see through soil, smoke, and water.</p>
+            </div>
+            <div class="sr-card">
+                <h3>03. DEEP RECOVERY</h3>
+                <p>Black box pulls, hazmat retrieval, underwater salvage with stabilized comms.</p>
+            </div>
+            <div class="sr-card">
+                <h3>04. EVIDENCE & DATA</h3>
+                <p>High-def 3D maps exported as point-clouds and IFC for investigators.</p>
+            </div>
+        </div>
+        <div class="xray-wrap">
+            <div class="xray-stage">
+                <div class="xray-before"></div>
+                <div class="xray-after" id="xrayAfter"></div>
+            </div>
+            <input type="range" id="xraySlider" class="xray-slider" min="0" max="100" value="50">
+        </div>
+        <div class="pointcloud" id="pointcloud"></div>
+    </div>
+</section>
+
+<!-- SENSOR HEAD & MODES -->
+<section class="sensor-module">
+    <div class="sensor-panel">
+        <h3>MULTI-SPECTRAL SCANNER</h3>
+        <div class="mode-switch">
+            <button class="mode-btn active" data-mode="visible">VISIBLE LIGHT</button>
+            <button class="mode-btn" data-mode="infrared">INFRARED</button>
+            <button class="mode-btn" data-mode="radar">RADAR</button>
+        </div>
+        <model-viewer id="sensorViewer"
+            src="3Dmodels/demo.glb"
+            camera-controls
+            auto-rotate
+            exposure="1.1"
+            shadow-intensity="1"
+            environment-image="neutral"
+            style="width:100%;height:340px; background: radial-gradient(circle at 50% 30%, rgba(0,242,255,0.18), #05070a); border-radius: 12px; border:1px solid rgba(0,242,255,0.3);">
+        </model-viewer>
+    </div>
+    <div class="sensor-panel">
+        <h3>RECOVERY TECH // FILE FOLDER</h3>
+        <div class="folder">
+            <h4>Tool: Acoustic Triangulation</h4>
+            <p>Use Case: Locating "pings" from black boxes or structural movement.</p>
+            <p>Range: Up to 500m through solid rock.</p>
+        </div>
+        <div class="folder">
+            <h4>Tool: Chemical Sniffer</h4>
+            <p>Detects VOCs, explosive residue, toxic seepage.</p>
+        </div>
+        <div class="gauge"></div>
+        <div class="coords-log">
+            <div>SECTOR_7G // STATUS: CLEARED // ASSETS_RECOVERED: 12</div>
+            <div>SECTOR_42A // STATUS: ACTIVE_SCAN // ASSETS_RECOVERED: --</div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// X-ray slider
+const slider = document.getElementById('xraySlider');
+const xrayAfter = document.getElementById('xrayAfter');
+if (slider && xrayAfter) {
+    slider.addEventListener('input', () => {
+        const val = slider.value;
+        xrayAfter.style.clipPath = `inset(0 0 0 ${val}%)`;
+    });
+}
+
+// Point cloud assembly
+const pc = document.getElementById('pointcloud');
+if (pc) {
+    const dots = [];
+    for (let i = 0; i < 180; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'pc-dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        pc.appendChild(dot);
+        dots.push(dot);
+    }
+    const target = dots.map(() => ({
+        x: 40 + Math.random() * 20,
+        y: 30 + Math.random() * 40
+    }));
+    let assembled = false;
+    pc.addEventListener('mouseenter', () => {
+        assembled = true;
+        dots.forEach((d, i) => {
+            d.style.transform = `translate(${target[i].x - parseFloat(d.style.left)}px, ${target[i].y - parseFloat(d.style.top)}px)`;
+            d.style.opacity = 1;
+        });
+    });
+    pc.addEventListener('mouseleave', () => {
+        assembled = false;
+        dots.forEach(d => {
+            d.style.transform = 'translate(0,0)';
+            d.style.opacity = 0.7;
+        });
+    });
+}
+
+// Sensor mode switch
+const sensorViewer = document.getElementById('sensorViewer');
+document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.dataset.mode;
+        if (mode === 'visible') {
+            sensorViewer.style.background = 'radial-gradient(circle at 50% 30%, rgba(0,242,255,0.18), #05070a)';
+        } else if (mode === 'infrared') {
+            sensorViewer.style.background = 'radial-gradient(circle at 40% 30%, rgba(255,64,0,0.25), #0a0608)';
+        } else {
+            sensorViewer.style.background = 'radial-gradient(circle at 50% 50%, rgba(0,255,65,0.2), #05070a)';
+        }
+    });
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emergency Rescue | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .rescue-page {
+            --action: var(--yak-accent);
+            --med-green: #00ff41;
+            --warn-red: #d32f2f;
+            --bg: var(--yak-bg);
+            --panel: var(--yak-panel);
+            --grid: rgba(255,255,255,0.05);
+            color: var(--yak-text);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            background: radial-gradient(circle at 20% 20%, rgba(209,122,50,0.16), transparent 40%), var(--yak-bg);
+        }
+        .res-hero {
+            position: relative;
+            padding: 140px 5% 80px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.72), rgba(0,0,0,0.9)), url('images/rescue-arm.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        .res-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(var(--grid) 1px, transparent 0);
+            background-size: 4px 4px;
+            opacity: 0.4;
+        }
+        .res-hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; display: grid; gap: 18px; }
+        .res-eyebrow { letter-spacing: 4px; color: var(--action); text-transform: uppercase; font-size: 12px; margin: 0; }
+        .res-hero h1 { font-family: 'Michroma', system-ui, sans-serif; margin: 6px 0 10px; font-size: clamp(34px, 4vw, 52px); color: #fff; letter-spacing: 2px; }
+        .res-hero p { margin: 0; max-width: 720px; line-height: 1.6; }
+        .heartbeat-line {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 18px;
+            height: 32px;
+            pointer-events: none;
+            background: linear-gradient(90deg, transparent 0%, rgba(0,255,65,0.1) 20%, rgba(0,255,65,0.25) 60%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+        }
+        .heartbeat-line::after {
+            content: "";
+            position: absolute;
+            left: -40px; top: 50%;
+            width: 160px; height: 1px;
+            background: repeating-linear-gradient(90deg, #00ff41, #00ff41 6px, transparent 6px, transparent 12px);
+            transform: translateY(-50%);
+            animation: ekg 2s linear infinite;
+        }
+        @keyframes ekg { to { transform: translate(100vw, -50%); } }
+        .res-modules { padding: 70px 5% 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+        .res-card {
+            position: relative;
+            background: var(--panel);
+            border: 1px solid rgba(255,140,0,0.3);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 14px 30px rgba(0,0,0,0.55);
+        }
+        .res-card .corner { position: absolute; width: 18px; height: 18px; border: 2px solid var(--yak-accent-2); }
+        .corner.tl { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+        .corner.tr { top: 8px; right: 8px; border-left: 0; border-bottom: 0; }
+        .corner.bl { bottom: 8px; left: 8px; border-right: 0; border-top: 0; }
+        .corner.br { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+        .res-card h3 { margin: 6px 0 8px; font-family: 'Michroma', sans-serif; color: var(--action); letter-spacing: 1px; }
+        .res-card p { margin: 0 0 10px; color: #d8d8d8; line-height: 1.6; }
+        .res-card .label { font-size: 12px; letter-spacing: 2px; color: #ffd700; }
+        .res-visuals { padding: 50px 5%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 22px; background: #0a0c0f; }
+        .analysis-box, .waveform-box, .path-box {
+            position: relative;
+            background: var(--panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 12px;
+            padding: 14px;
+            overflow: hidden;
+        }
+        .hazard-photo { position: relative; height: 260px; border-radius: 10px; background: url('images/tunnel.jpg'); background-size: cover; background-position: center; }
+        .bbox { position: absolute; border: 2px solid var(--yak-accent); color: var(--yak-accent); font-size: 12px; padding: 4px 6px; background: rgba(0,0,0,0.5); }
+        .bbox:hover { box-shadow: 0 0 12px rgba(209,122,50,0.7); }
+        .waveform {
+            position: relative;
+            height: 180px;
+            background: linear-gradient(180deg, rgba(0,255,65,0.1), rgba(0,0,0,0.7));
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .waveform canvas { position: absolute; inset: 0; }
+        .listen-btn {
+            margin-top: 10px;
+            padding: 10px 14px;
+            border: 1px solid rgba(0,255,65,0.5);
+            background: rgba(0,255,65,0.1);
+            color: #00ff41;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .path-box img { width: 100%; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .arm-3d {
+            background: var(--panel);
+            border: 1px solid rgba(240,195,109,0.22);
+            border-radius: 14px;
+            padding: 14px;
+        }
+        .arm-3d h3 { margin: 0 0 10px; color: var(--action); font-family: 'Michroma', sans-serif; }
+        .spec-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .spec-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); color: #dcdcdc; }
+        .cta-rescue {
+            padding: 70px 5% 90px;
+            background: linear-gradient(180deg, #080a0c, #0f1116);
+            text-align: center;
+        }
+        .cta-box {
+            display: inline-block;
+            padding: 24px 26px;
+            border: 1px solid rgba(240,195,109,0.24);
+            border-radius: 14px;
+            background: rgba(0,0,0,0.45);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+        }
+        .cta-box h3 { margin: 0 0 8px; color: #fff; font-family: 'Michroma', sans-serif; letter-spacing: 1px; }
+        .cta-box p { margin: 0 0 14px; color: #d8d8d8; line-height: 1.6; }
+        .cta-btn {
+            background: linear-gradient(120deg, #f0c36d, #d17a32);
+            color: #0c0a08;
+            border: 0;
+            padding: 12px 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 18px rgba(240,195,109,0.35);
+        }
+        @media(max-width: 960px) { .res-hero { padding-top: 120px; } .res-modules { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="dropdown-page rescue-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="res-hero">
+    <div class="res-hero-inner">
+        <p class="res-eyebrow">COMBAT MEDIC TABLET // LIVE EXTRACTION</p>
+        <h1>PRECISION IN THE RUBBLE.</h1>
+        <p>When millimeters matter, YAKSHA provides the surgical touch required for extraction.</p>
+    </div>
+</section>
+<div class="heartbeat-line"></div>
+
+<!-- THE EXTRACTION PATH -->
+<section class="res-modules">
+    <article class="res-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <p class="label">01. THE BREACH</p>
+        <h3>Overcoming the barrier</h3>
+        <p>Hydraulic arms cut steel and lift concrete. Shock-mounted cameras keep visuals stable through impact.</p>
+    </article>
+    <article class="res-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <p class="label">02. LIFE DETECTION</p>
+        <h3>Visual, Thermal, Acoustic</h3>
+        <p>Heartbeat-grade acoustic sensing plus thermal signatures and lidar returns fuse into a single lock.</p>
+    </article>
+    <article class="res-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <p class="label">03. STABILIZATION</p>
+        <h3>Hold the link</h3>
+        <p>Bidirectional comms, filtered air push, and beacon drop maintain the survivor’s pocket until medics arrive.</p>
+    </article>
+    <article class="res-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <p class="label">04. SAFE EXTRACTION</p>
+        <h3>Clear the corridor</h3>
+        <p>Rover sweeps debris, paints a safe path, and marks unstable beams for human teams.</p>
+    </article>
+</section>
+
+<!-- RESCUE HUD VISUALS -->
+<section class="res-visuals">
+    <div class="analysis-box">
+        <p class="label">OBSTACLE ANALYSIS // OBJECT DETECTION</p>
+        <div class="hazard-photo">
+            <div class="bbox" style="top:20%;left:18%;">HAZARD: UNSTABLE_BEAM</div>
+            <div class="bbox" style="top:55%;left:60%;">PATH: 82%_VIABLE</div>
+            <div class="bbox" style="top:68%;left:28%;">DEBRIS: REBAR</div>
+        </div>
+        <p class="hint">Hover boxes for scan glow.</p>
+    </div>
+    <div class="waveform-box">
+        <p class="label">LIFE DETECTION // ACOUSTIC VISUALIZER</p>
+        <div class="waveform"><canvas id="waveCanvas"></canvas></div>
+        <button class="listen-btn" id="listenBtn">LISTEN FOR SURVIVORS</button>
+    </div>
+    <div class="path-box">
+        <p class="label">SAFE PATH // TECHNICAL DRAWING</p>
+        <img src="images/safe-path.png" alt="Safe path corridor" />
+    </div>
+</section>
+
+<!-- RESCUE ARM 3D + SPECS -->
+<section class="arm-3d">
+    <h3>RESCUE ARM // MANIPULATOR RANGE</h3>
+    <model-viewer
+        src="3Dmodels/demo.glb"
+        camera-controls
+        auto-rotate
+        shadow-intensity="1"
+        exposure="1.15"
+        environment-image="neutral"
+        style="width:100%;height:360px; background: radial-gradient(circle at 40% 30%, rgba(255,140,0,0.2), #07090d); border-radius: 12px; border:1px solid rgba(255,140,0,0.28);">
+    </model-viewer>
+    <table class="spec-table">
+        <tr><td>Lifting Capacity</td><td>500kg (Direct Vertical)</td></tr>
+        <tr><td>Precision</td><td>+/- 2mm positioning</td></tr>
+        <tr><td>Sensory Array</td><td>360° Lidar + 4K macro zoom</td></tr>
+        <tr><td>Durability</td><td>IP68 waterproof & dustproof</td></tr>
+    </table>
+</section>
+
+<!-- CTA -->
+<section class="cta-rescue">
+    <div class="cta-box">
+        <h3>ARE YOU A FIRST RESPONDER?</h3>
+        <p>Sync your unit with the YAKSHA mesh network and request a technical demo.</p>
+        <button class="cta-btn" onclick="location.href='contact.html'">REQUEST TECHNICAL DEMO</button>
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Audio visualizer
+const canvas = document.getElementById('waveCanvas');
+const listenBtn = document.getElementById('listenBtn');
+if (canvas && listenBtn) {
+    const ctx = canvas.getContext('2d');
+    let running = false;
+    function draw() {
+        if (!running) return;
+        const w = canvas.width = canvas.clientWidth;
+        const h = canvas.height = canvas.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        ctx.strokeStyle = '#00ff41';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x=0; x<w; x+=6) {
+            const y = h/2 + Math.sin((x + Date.now()/8)/22) * (h*0.18) * Math.random();
+            x === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+        requestAnimationFrame(draw);
+    }
+    listenBtn.addEventListener('click', () => {
+        running = !running;
+        listenBtn.textContent = running ? 'LISTENING…' : 'LISTEN FOR SURVIVORS';
+        if (running) draw();
+    });
+}
+</script>
+
+
+</body>
+</html>

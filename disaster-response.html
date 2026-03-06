@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disaster Response | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .disaster-page {
+            /* Mine / underground palette (site-wide) */
+            --hazard: var(--yak-accent);
+            --warn: var(--yak-accent-2);
+            --bg: var(--yak-bg);
+            --panel: var(--yak-panel);
+            --line: rgba(240, 195, 109, 0.28);
+            background: var(--yak-bg);
+            color: var(--yak-text);
+            font-family: 'Space Mono', ui-monospace, monospace;
+        }
+        .dr-hero {
+            position: relative;
+            padding: 140px 5% 80px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 32px;
+            background: radial-gradient(circle at 20% 20%, rgba(209,122,50,0.18), transparent 38%),
+                        linear-gradient(135deg, #120c08, #080604);
+            overflow: hidden;
+        }
+        .dr-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 4px 4px;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        .status-chip {
+            grid-column: 1 / -1;
+            width: fit-content;
+            padding: 10px 14px;
+            border: 1px solid rgba(0,255,65,0.35);
+            color: #00ff41;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(0, 30, 0, 0.4);
+            border-radius: 8px;
+        }
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #00ff41;
+            box-shadow: 0 0 12px #00ff41;
+            animation: pulseReady 1.6s ease-in-out infinite;
+        }
+        .hero-copy h1 {
+            font-family: 'Saira Stencil One', system-ui, sans-serif;
+            font-size: clamp(32px, 4vw, 52px);
+            letter-spacing: 2px;
+            margin: 6px 0 10px;
+            color: var(--hazard);
+        }
+        .hero-copy .subhead { color: #e9dfd1; margin: 0 0 14px; line-height: 1.6; }
+        .eyebrow { text-transform: uppercase; letter-spacing: 4px; font-size: 12px; color: var(--warn); margin: 0 0 6px; }
+        .mission-report {
+            margin-top: 14px;
+            padding: 14px;
+            border: 1px dashed var(--line);
+            background: rgba(0,0,0,0.35);
+            border-radius: 10px;
+            display: grid;
+            gap: 6px;
+        }
+        .hud-map {
+            position: relative;
+            background: #0f0a06;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+            min-height: 320px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+        }
+        .map-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(209,122,50,0.18), transparent),
+                        url('images/map-dark.png'),
+                        radial-gradient(circle at 50% 50%, rgba(240,195,109,0.14), transparent 60%);
+            background-size: cover;
+            filter: contrast(1.05);
+        }
+        .mission-point {
+            position: absolute;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: var(--hazard);
+            box-shadow: 0 0 16px rgba(209,122,50,0.9);
+            cursor: pointer;
+        }
+        .mission-point::after, .mission-point::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(240,195,109,0.35);
+            opacity: 0;
+        }
+        .mission-point.active::after {
+            animation: ripple 1.3s ease-out;
+        }
+        .mission-point.active::before {
+            animation: ripple 1.3s ease-out 0.25s;
+        }
+        .live-telemetry {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 28%;
+            background: linear-gradient(180deg, rgba(0,20,0,0.7), rgba(0,0,0,0.85));
+            border-right: 1px solid rgba(0,255,65,0.2);
+            padding: 12px;
+            font-size: 12px;
+            color: #00ff41;
+            overflow: hidden;
+        }
+        .dr-cycle {
+            padding: 70px 5%;
+            background: linear-gradient(180deg, #0c0a08, #16100b);
+        }
+        .section-header { display: flex; gap: 14px; align-items: baseline; margin-bottom: 18px; }
+        .section-header h2 { margin: 0; font-family: 'Saira Stencil One', system-ui, sans-serif; letter-spacing: 1px; color: var(--warn); }
+        .bracket { font-family: 'Space Mono', monospace; color: var(--line); letter-spacing: 2px; }
+        .cycle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+        .cycle-card {
+            position: relative;
+            padding: 18px;
+            background: var(--panel);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 12px;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.55);
+        }
+        .cycle-card .corner { position: absolute; width: 20px; height: 20px; border: 2px solid var(--warn); }
+        .cycle-card .tl { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+        .cycle-card .tr { top: 8px; right: 8px; border-left: 0; border-bottom: 0; }
+        .cycle-card .bl { bottom: 8px; left: 8px; border-right: 0; border-top: 0; }
+        .cycle-card .br { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+        .cycle-card .phase { color: var(--warn); letter-spacing: 2px; font-size: 12px; margin: 0 0 8px; }
+        .cycle-card h3 { margin: 0 0 8px; color: #fff; letter-spacing: 1px; }
+        .cycle-card .body { margin: 0 0 10px; color: #e9dfd1; line-height: 1.6; }
+        .data-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+        .data-list li { display: flex; justify-content: space-between; color: #b9b2a6; }
+        .dr-hud {
+            padding: 70px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            background: radial-gradient(circle at 70% 10%, rgba(240,195,109,0.14), transparent 40%), #0c0a08;
+        }
+        .thermal-module, .payload-module {
+            background: var(--panel);
+            border: 1px solid rgba(255,215,0,0.24);
+            border-radius: 14px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .thermal-stage {
+            position: relative;
+            height: 320px;
+            border-radius: 12px;
+            background: url('images/smoke-room.jpg'), radial-gradient(circle at 40% 40%, rgba(20,20,20,0.7), rgba(0,0,0,0.9));
+            background-size: cover;
+            overflow: hidden;
+            border: 1px solid rgba(240,195,109,0.2);
+        }
+        .thermal-lens {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, rgba(240,195,109,0.85) 0%, rgba(209,122,50,0.85) 55%, rgba(240,195,109,0.25) 100%);
+            mix-blend-mode: screen;
+            filter: saturate(1.4);
+            opacity: 0.8;
+            transform: translate(-999px, -999px);
+        }
+        .hint { margin-top: 10px; color: #b9b2a6; font-size: 12px; }
+        .mode-buttons { display: flex; gap: 8px; margin-bottom: 12px; }
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(209,122,50,0.14);
+            color: var(--warn);
+            border: 1px solid rgba(240,195,109,0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+        .mode-btn.active { background: var(--hazard); color: #0c0a08; border-color: var(--hazard); box-shadow: 0 0 18px rgba(209,122,50,0.45); }
+        .model-wrap { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,215,0,0.2); }
+        .mode-caption { margin-top: 10px; color: #e9dfd1; font-size: 13px; }
+        .hotline { padding: 60px 5% 100px; background: #0c0a08; }
+        .hotline-border {
+            border: 2px solid rgba(211,47,47,0.8);
+            box-shadow: 0 0 20px rgba(211,47,47,0.5);
+            padding: 18px;
+            text-align: center;
+            border-radius: 12px;
+            animation: pulseRed 1.8s ease-in-out infinite;
+        }
+        .hotline-eyebrow { color: #ffcccc; letter-spacing: 3px; font-family: 'Space Mono', monospace; }
+        .hotline-btn {
+            margin-top: 12px;
+            background: linear-gradient(120deg, #f0c36d, #d17a32);
+            color: #0c0a08;
+            border: 0;
+            padding: 14px 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 22px rgba(240,195,109,0.45);
+        }
+        @keyframes pulseReady { 0%,100%{opacity:1; box-shadow:0 0 12px #00ff41;} 50%{opacity:0.6; box-shadow:0 0 6px #00ff41;} }
+        @keyframes ripple { from { transform: scale(0.6); opacity: 0.8; } to { transform: scale(2.6); opacity: 0; } }
+        @keyframes pulseRed { 0%,100% { box-shadow: 0 0 12px rgba(211,47,47,0.3); } 50% { box-shadow: 0 0 20px rgba(211,47,47,0.6); } }
+        @media (max-width: 960px) {
+            .dr-hero { grid-template-columns: 1fr; padding-top: 120px; }
+            .hud-map { min-height: 260px; }
+            .live-telemetry { width: 42%; }
+        }
+    </style>
+</head>
+<body class="dropdown-page disaster-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO / COMMAND HEADER -->
+<section class="dr-hero">
+    <div class="status-chip">
+        <span class="status-dot"></span>
+        SYSTEM STATUS: READY FOR DEPLOYMENT
+    </div>
+    <div class="hero-copy">
+        <p class="eyebrow">LIVE OPERATIONS DASHBOARD</p>
+        <h1>WE GO WHERE THE HUMAN HEART CANNOT.</h1>
+        <p class="subhead">Rapid-deployment robotics for the most hostile environments on Earth.</p>
+        <div class="mission-report">
+            <div>MISSION ID: <strong>092-B</strong></div>
+            <div>LOCATION: <strong>[City Name]</strong></div>
+            <div>OBJECTIVE: Locate survivors in a Category 4 structural collapse.</div>
+            <div>DEPLOYMENT: 2x YAKSHA Scouts, 1x Heavy-Duty Link.</div>
+            <div>OUTCOME: Mapped 4,000 sq. ft. // 3 targets located for med-extraction.</div>
+        </div>
+    </div>
+    <div class="hud-map">
+        <div class="map-bg">
+            <div class="mission-point" style="top: 30%; left: 42%;" data-city="DELHI"></div>
+            <div class="mission-point" style="top: 58%; left: 68%;" data-city="TOKYO"></div>
+            <div class="mission-point" style="top: 46%; left: 24%;" data-city="DUBAI"></div>
+        </div>
+        <div class="live-telemetry" id="telemetryStrip"></div>
+    </div>
+</section>
+
+<!-- THE RESPONSE CYCLE -->
+<section class="dr-cycle">
+    <div class="section-header">
+        <div class="bracket">[ 01-04 ]</div>
+        <div>
+            <p class="eyebrow">THE RESPONSE CYCLE</p>
+            <h2>The stages of a mission</h2>
+        </div>
+    </div>
+    <div class="cycle-grid">
+        <article class="cycle-card">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <p class="phase">01. THE ALERT</p>
+            <h3>Deployment: T-Minus Zero</h3>
+            <p class="body">Rover roll-out in <strong>&lt; 120s</strong>. Auto-route from alert source to closest launch hub with crew paging.</p>
+            <ul class="data-list">
+                <li><span>LAUNCH SITE</span><span>HUB-DELTA</span></li>
+                <li><span>TTR (TIME TO ROLL)</span><span>92 SEC</span></li>
+                <li><span>COMMS LINK</span><span>ENCRYPTED MESH</span></li>
+            </ul>
+        </article>
+        <article class="cycle-card">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <p class="phase">02. THE INGRESS</p>
+            <h3>Breaching the Impossible</h3>
+            <p class="body">Tracked ingress through collapsed or toxic corridors. Autonomy toggles to crawl/slide with anti-fume seals.</p>
+            <ul class="data-list">
+                <li><span>ENTRY MODE</span><span>CRAWL + AIR-PURGE</span></li>
+                <li><span>STRUCTURE</span><span>GRADE 5 DEBRIS</span></li>
+                <li><span>HAZARDS</span><span>GAS / LIVE WIRES</span></li>
+            </ul>
+        </article>
+        <article class="cycle-card">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <p class="phase">03. THE EXTRACTION</p>
+            <h3>Locate. Stabilize. Signal.</h3>
+            <p class="body">Thermal + Lidar + acoustic triangulation to lock survivors. Beacon drop + filtered air push to stabilize until med teams arrive.</p>
+            <ul class="data-list">
+                <li><span>SENSOR FUSION</span><span>LIDAR / THERMAL / AUDIO</span></li>
+                <li><span>LOCK TIME</span><span>14 SEC AVG</span></li>
+                <li><span>BEACON</span><span>UHF + STROBE</span></li>
+            </ul>
+        </article>
+        <article class="cycle-card">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <p class="phase">04. POST-MISSION</p>
+            <h3>Data for Prevention</h3>
+            <p class="body">Structural stress map exported to civil teams; failure signatures fed to training sims to avoid repeat collapse modes.</p>
+            <ul class="data-list">
+                <li><span>DIGITAL TWIN</span><span>RESOLUTION: 3CM</span></li>
+                <li><span>REPORT</span><span>PDF / KML / IFC</span></li>
+                <li><span>REPLAY</span><span>SIM READY</span></li>
+            </ul>
+        </article>
+    </div>
+</section>
+
+<!-- THERMAL VISION + TACTICAL HUD -->
+<section class="dr-hud">
+    <div class="thermal-module">
+        <p class="eyebrow">THERMAL VISION // DYNAMIC MASKING</p>
+        <div class="thermal-stage" id="thermalStage">
+            <div class="thermal-lens" id="thermalLens"></div>
+        </div>
+        <p class="hint">Move cursor to scan. Thermal lens reveals trapped subject.</p>
+    </div>
+    <div class="payload-module">
+        <p class="eyebrow">PAYLOAD SWAPPER // MODEL VIEW</p>
+        <div class="mode-buttons">
+            <button data-mode="fire" class="mode-btn active">FIRE</button>
+            <button data-mode="flood" class="mode-btn">FLOOD</button>
+            <button data-mode="quake" class="mode-btn">EARTHQUAKE</button>
+        </div>
+        <div class="model-wrap">
+            <model-viewer id="payloadViewer"
+                src="3Dmodels/demo.glb"
+                camera-controls
+                autoplay
+                auto-rotate
+                exposure="1.1"
+                shadow-intensity="1"
+                environment-image="neutral"
+                style="width:100%;height:360px;--poster-color:transparent; background: radial-gradient(circle at 30% 20%, rgba(255,79,0,0.25), #0b0806); border-radius: 12px; border:1px solid rgba(255,215,0,0.25);">
+            </model-viewer>
+            <div class="mode-caption" id="modeCaption">FIRE LOADOUT // Heat-shielded hull + mist nozzle</div>
+        </div>
+    </div>
+</section>
+
+<!-- EMERGENCY HOTLINE -->
+<section class="hotline">
+    <div class="hotline-border">
+        <p class="hotline-eyebrow">URGENT DEPLOYMENT REQUEST: 24/7 COMMAND CENTER ACTIVE.</p>
+        <button class="hotline-btn" onclick="location.href='emergency-helpline.html'">INITIATE RESPONSE PROTOCOL</button>
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Telemetry scrolling text
+const telemetryStrip = document.getElementById('telemetryStrip');
+if (telemetryStrip) {
+    const feed = [
+        'O2_LEVEL: 19% // TEMP: 42°C // MOTION_DETECTED',
+        'CO2_SPIKE: 3.1% // FAN_STATUS: ACTIVE',
+        'LIDAR_RETURN: 342 PTS/s // VIS: 12m',
+        'THERMAL_DIFF: 18°C // SIGNATURE: HUMAN-SIZED',
+        'AUDIO_RUMBLE: 36hz // STRUCTURE: UNSTABLE',
+        'PACKET LOSS: 0.2% // LINK: SECURE',
+        'GAS SENSOR: NH3 TRACE // VENT: ENABLED',
+    ];
+    let idx = 0;
+    setInterval(() => {
+        const line = document.createElement('div');
+        line.textContent = feed[idx % feed.length];
+        line.style.marginBottom = '6px';
+        telemetryStrip.appendChild(line);
+        telemetryStrip.scrollTop = telemetryStrip.scrollHeight;
+        idx++;
+    }, 1100);
+}
+
+// Map ripple on click
+document.querySelectorAll('.mission-point').forEach(point => {
+    point.addEventListener('click', () => {
+        point.classList.remove('active');
+        void point.offsetWidth;
+        point.classList.add('active');
+    });
+});
+
+// Thermal dynamic masking
+const thermalStage = document.getElementById('thermalStage');
+const thermalLens = document.getElementById('thermalLens');
+if (thermalStage && thermalLens) {
+    thermalStage.addEventListener('mousemove', (e) => {
+        const rect = thermalStage.getBoundingClientRect();
+        const x = e.clientX - rect.left - thermalLens.offsetWidth / 2;
+        const y = e.clientY - rect.top - thermalLens.offsetHeight / 2;
+        thermalLens.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    thermalStage.addEventListener('mouseleave', () => {
+        thermalLens.style.transform = 'translate(-999px, -999px)';
+    });
+}
+
+// Payload swapper
+const modeCaption = document.getElementById('modeCaption');
+const payloadViewer = document.getElementById('payloadViewer');
+document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.dataset.mode;
+        if (mode === 'fire') {
+            payloadViewer.setAttribute('exposure', '1.1');
+            payloadViewer.style.background = 'radial-gradient(circle at 30% 20%, rgba(255,79,0,0.25), #0b0806)';
+            modeCaption.textContent = 'FIRE LOADOUT // Heat-shielded hull + mist nozzle';
+        } else if (mode === 'flood') {
+            payloadViewer.setAttribute('exposure', '1.3');
+            payloadViewer.style.background = 'radial-gradient(circle at 40% 40%, rgba(0,242,255,0.2), #071018)';
+            modeCaption.textContent = 'FLOOD LOADOUT // Sealed electronics + bilge pump intake';
+        } else {
+            payloadViewer.setAttribute('exposure', '1.0');
+            payloadViewer.style.background = 'radial-gradient(circle at 50% 30%, rgba(255,215,0,0.2), #0c0f14)';
+            modeCaption.textContent = 'EARTHQUAKE LOADOUT // Grippers extended + Lidar mast raised';
+        }
+    });
+});
+</script>
+
+
+</body>
+</html>

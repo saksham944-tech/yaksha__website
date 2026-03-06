@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAKSHA Control Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .dashboard-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR */
+        .dashboard-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(30, 30, 30, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .dashboard-navbar .logo {
+            color: #C26A3A;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .dashboard-navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .dashboard-navbar .nav-links a {
+            color: #EAEAEA;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .dashboard-navbar .nav-links a:hover {
+            background: rgba(194, 106, 58, 0.2);
+        }
+
+        /* MAIN CAMERA AREA */
+        .camera-container {
+            flex: 1;
+            margin-top: 60px;
+            position: relative;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            position: relative;
+        }
+
+        .camera-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .camera-placeholder::before {
+            content: "📹";
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        /* GPS PANEL - Top Left */
+        .gps-panel {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background: rgba(30, 30, 30, 0.9);
+            border: 2px solid #C26A3A;
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .gps-panel h3 {
+            margin: 0 0 10px 0;
+            color: #C26A3A;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gps-data {
+            color: #EAEAEA;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .gps-data .label {
+            color: #999;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .gps-data .value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* 3D MAP PREVIEW UNDER GPS DATA */
+        .gps-map-wrapper {
+            margin-top: 10px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #444;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        #gps-map {
+            width: 260px;
+            height: 180px;
+        }
+
+        /* TOOLBOX PANEL - Top Right */
+        .toolbox-panel {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(30, 30, 30, 0.9);
+            border: 2px solid #C26A3A;
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .toolbox-panel h3 {
+            margin: 0 0 10px 0;
+            color: #C26A3A;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toolbox-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .toolbox-item {
+            background: rgba(194, 106, 58, 0.1);
+            border: 1px solid #C26A3A;
+            border-radius: 4px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #EAEAEA;
+            font-size: 12px;
+        }
+
+        .toolbox-item:hover {
+            background: rgba(194, 106, 58, 0.3);
+            transform: scale(1.05);
+        }
+
+        .toolbox-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* CONTROL PANEL - Bottom */
+        .control-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 30, 30, 0.95);
+            border-top: 2px solid #C26A3A;
+            padding: 20px;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: rgba(194, 106, 58, 0.2);
+            border: 2px solid #C26A3A;
+            color: #EAEAEA;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 100px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .control-btn:hover {
+            background: rgba(194, 106, 58, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(194, 106, 58, 0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.emergency {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff4444;
+        }
+
+        .control-btn.emergency:hover {
+            background: rgba(255, 0, 0, 0.4);
+        }
+
+        /* STATUS BAR */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #EAEAEA;
+            font-size: 14px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .gps-panel, .toolbox-panel {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                margin: 10px;
+                width: calc(100% - 40px);
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .control-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="dashboard-navbar">
+        <a href="index.html" class="logo">YAKSHA</a>
+        <div class="nav-links">
+            <a href="gps.html">GPS</a>
+            <a href="camera.html">Camera</a>
+            <a href="lidar-sensor.html">Lidar</a>
+            <a href="gas-sensor.html">Gas</a>
+            <a href="thermal-sensor.html">Thermal</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </nav>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dashboard-container">
+        <!-- CAMERA FEED AREA -->
+        <div class="camera-container">
+            <div class="camera-feed">
+                <div class="camera-placeholder">
+                    Live Camera Feed
+                    <div style="font-size: 14px; margin-top: 10px; color: #999;">Camera connection will be established here</div>
+                </div>
+            </div>
+
+            <!-- GPS PANEL - Top Left -->
+            <div class="gps-panel">
+                <h3>📍 GPS Status</h3>
+                <div class="gps-data">
+                    <div><span class="label">Latitude:</span> <span class="value" id="gps-lat">28.6139° N</span></div>
+                    <div><span class="label">Longitude:</span> <span class="value" id="gps-lon">77.2090° E</span></div>
+                    <div><span class="label">Altitude:</span> <span class="value" id="gps-alt">216 m</span></div>
+                    <div><span class="label">Speed:</span> <span class="value" id="gps-speed">0 km/h</span></div>
+                    <div><span class="label">Satellites:</span> <span class="value" id="gps-sats">12</span></div>
+                    <div><span class="label">Status:</span> <span class="value" id="gps-status">Active</span></div>
+                </div>
+                <!-- 3D-style map preview -->
+                <div class="gps-map-wrapper">
+                    <div id="gps-map"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CONTROL PANEL - Bottom -->
+        <div class="control-panel">
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <span>UGV Status: <strong>Connected</strong></span>
+                </div>
+                <div class="status-item">
+                    <span>Battery: <strong id="battery-level">85%</strong></span>
+                </div>
+                <div class="status-item">
+                    <span>Signal: <strong id="signal-strength">Strong</strong></span>
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="control-btn" id="btn-forward">▲ Forward</button>
+                <button class="control-btn" id="btn-left">◄ Left</button>
+                <button class="control-btn" id="btn-stop">⏸ Stop</button>
+                <button class="control-btn" id="btn-right">► Right</button>
+                <button class="control-btn" id="btn-backward">▼ Backward</button>
+                <button class="control-btn" id="btn-speed-up">⚡ Speed +</button>
+                <button class="control-btn" id="btn-speed-down">🐌 Speed -</button>
+                <button class="control-btn emergency" id="btn-emergency">🛑 Emergency Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        fetch('check_session.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.logged_in) {
+                    window.location.href = 'login.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking session:', error);
+                window.location.href = 'login.html';
+            });
+
+        // GOOGLE MAPS 3D-LIKE GLOBE VIEW -----------------------
+        let gpsMap;
+        let gpsMarker;
+
+        function initMap() {
+            const initialPos = { lat: 28.6139, lng: 77.2090 };
+
+            gpsMap = new google.maps.Map(document.getElementById('gps-map'), {
+                center: initialPos,
+                zoom: 16,
+                mapTypeId: 'hybrid',  // satellite + labels
+            });
+
+            gpsMap.setTilt(45);     // enable 3D tilt where available
+
+            gpsMarker = new google.maps.Marker({
+                position: initialPos,
+                map: gpsMap,
+                title: 'UGV Position'
+            });
+        }
+
+        // expose for Google Maps callback
+        window.initMap = initMap;
+
+        // GPS Data Update - fetch latest reading from backend
+        function updateGPS() {
+            fetch('get_gps.php')
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success || !data.data) {
+                        document.getElementById('gps-status').textContent = 'Waiting for GPS...';
+                        return;
+                    }
+
+                    const d = data.data;
+                    const lat = d.lat.toFixed(4);
+                    const lon = d.lon.toFixed(4);
+                    const alt = d.alt != null ? d.alt.toFixed(1) : null;
+                    const speed = d.speed != null ? d.speed.toFixed(1) : null;
+                    const sats = d.sats != null ? d.sats : null;
+
+                    document.getElementById('gps-lat').textContent = lat + '° N';
+                    document.getElementById('gps-lon').textContent = lon + '° E';
+                    document.getElementById('gps-alt').textContent = (alt !== null ? alt + ' m' : '—');
+                    document.getElementById('gps-speed').textContent = (speed !== null ? speed + ' km/h' : '—');
+                    document.getElementById('gps-sats').textContent = (sats !== null ? sats : '—');
+                    document.getElementById('gps-status').textContent = 'Active';
+
+                    // Update marker on the 3D map if available
+                    if (gpsMap && gpsMarker) {
+                        const pos = { lat: d.lat, lng: d.lon };
+                        gpsMarker.setPosition(pos);
+                        gpsMap.setCenter(pos);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching GPS data:', err);
+                    document.getElementById('gps-status').textContent = 'GPS offline';
+                });
+        }
+
+        // Update GPS every 2 seconds
+        setInterval(updateGPS, 2000);
+
+        // UGV Control Buttons
+        const controlButtons = {
+            'btn-forward': { action: 'forward', key: 'w' },
+            'btn-backward': { action: 'backward', key: 's' },
+            'btn-left': { action: 'left', key: 'a' },
+            'btn-right': { action: 'right', key: 'd' },
+            'btn-stop': { action: 'stop', key: ' ' },
+            'btn-speed-up': { action: 'speed_up', key: '+' },
+            'btn-speed-down': { action: 'speed_down', key: '-' },
+            'btn-emergency': { action: 'emergency', key: 'Escape' }
+        };
+
+        // Add event listeners to control buttons
+        Object.keys(controlButtons).forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    const action = controlButtons[btnId].action;
+                    console.log('UGV Control:', action);
+                    // TODO: Send command to UGV via API
+                    // sendUGVCommand(action);
+                });
+            }
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            Object.keys(controlButtons).forEach(btnId => {
+                if (controlButtons[btnId].key.toLowerCase() === key) {
+                    document.getElementById(btnId).click();
+                }
+            });
+        });
+
+        // Toolbox items (for future robotic arm control)
+        document.querySelectorAll('.toolbox-item:not(.disabled)').forEach(item => {
+            item.addEventListener('click', function() {
+                const toolName = this.querySelector('div:last-child').textContent;
+                console.log('Robotic Arm Tool:', toolName);
+                // TODO: Implement robotic arm control
+                alert(`${toolName} control will be implemented soon`);
+            });
+        });
+
+        // Battery level simulation
+        let batteryLevel = 85;
+        setInterval(() => {
+            batteryLevel = Math.max(0, batteryLevel - 0.1);
+            document.getElementById('battery-level').textContent = Math.round(batteryLevel) + '%';
+            
+            if (batteryLevel < 20) {
+                document.getElementById('battery-level').style.color = '#ff4444';
+            } else if (batteryLevel < 50) {
+                document.getElementById('battery-level').style.color = '#ffaa00';
+            } else {
+                document.getElementById('battery-level').style.color = '#4CAF50';
+            }
+        }, 10000); // Update every 10 seconds
+    </script>
+
+    <!-- Google Maps JS API for 3D-style globe view.
+         Replace YOUR_API_KEY with your actual Google Maps JavaScript API key. -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+        async
+        defer
+    ></script>
+</body>
+</html>

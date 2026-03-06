@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Surveillance & Monitoring | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Chakra+Petch:wght@400;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        .soc-page{
+            --black:#0a0a0a;
+            --nv:#39ff14;
+            --alert:#ff3131;
+            --grey:#808080;
+            background: radial-gradient(circle at 30% 20%, rgba(240,195,109,0.07), transparent 45%),
+                        linear-gradient(180deg, #0c0a08, #16100b);
+            color: var(--yak-text);
+            font-family: "Chakra Petch", system-ui, sans-serif;
+            overflow-x:hidden;
+        }
+        .soc-page::before{
+            content:"";
+            position:fixed; inset:0;
+            background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 0);
+            background-size: 3px 3px;
+            opacity: 0.16;
+            pointer-events:none;
+            mix-blend-mode: soft-light;
+            z-index:0;
+        }
+        .soc-page::after{
+            content:"";
+            position:fixed; inset:0;
+            background: repeating-linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 1px, transparent 1px, transparent 5px);
+            opacity: 0.06;
+            pointer-events:none;
+            z-index:0;
+        }
+        .wrap{ position:relative; z-index:1; }
+        .rec{
+            position: fixed;
+            top: 86px;
+            right: 16px;
+            z-index: 60;
+            display:flex;
+            gap:10px;
+            align-items:center;
+            font-family: "Syncopate", system-ui, sans-serif;
+            letter-spacing: 2px;
+            color: rgba(255,49,49,0.9);
+            font-size: 12px;
+        }
+        .recDot{
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--alert);
+            box-shadow: 0 0 12px rgba(255,49,49,0.7);
+            animation: blink 1.6s ease-in-out infinite;
+        }
+        @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0.35} }
+        .hero{
+            padding: 140px 5% 60px;
+        }
+        .hero .eyebrow{
+            font-family: "Syncopate", system-ui, sans-serif;
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: rgba(240,195,109,0.85);
+            margin: 0 0 10px;
+        }
+        .hero h1{
+            margin:0 0 10px;
+            font-family: "Syncopate", system-ui, sans-serif;
+            letter-spacing: 2px;
+            font-size: clamp(32px, 4vw, 52px);
+            color: rgba(57,255,20,0.85);
+        }
+        .hero p{ margin:0; max-width: 760px; line-height: 1.7; color: rgba(233,223,209,0.82); }
+
+        .scanSweep{
+            position: fixed;
+            left:0; right:0;
+            height: 2px;
+            background: rgba(0,242,255,0.22);
+            box-shadow: 0 0 18px rgba(0,242,255,0.18);
+            top: 80px;
+            transform: translateY(-10px);
+            animation: sweep 6.5s linear infinite;
+            z-index: 30;
+            opacity: 0.55;
+        }
+        @keyframes sweep{ to { transform: translateY(110vh); } }
+
+        .monitorWall{
+            padding: 0 5% 70px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        .feed{
+            position: relative;
+            height: 170px;
+            border-radius: 14px;
+            border: 1px solid rgba(57,255,20,0.14);
+            background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/fpv.jpg');
+            background-size: cover;
+            background-position:center;
+            overflow:hidden;
+        }
+        .feed:nth-child(3n+2){ background-image: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/smoke-room.jpg'); }
+        .feed:nth-child(3n){ background-image: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/tunnel.jpg'); }
+        .feed .label{
+            position:absolute;
+            left: 10px; top: 10px;
+            font-family: "Chakra Petch", system-ui, sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            padding: 6px 10px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(57,255,20,0.18);
+            color: rgba(57,255,20,0.9);
+        }
+        .feed .data{
+            position:absolute;
+            left: 10px; bottom: 10px;
+            right: 10px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: rgba(233,223,209,0.78);
+            display:flex;
+            justify-content:space-between;
+            gap: 10px;
+        }
+        .multiSpec{
+            padding: 0 5% 70px;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+            align-items:start;
+        }
+        .panel{
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(57,255,20,0.12);
+            border-radius: 14px;
+            padding: 14px;
+            position:relative;
+            overflow:hidden;
+        }
+        .panel h2{
+            margin:0 0 10px;
+            font-family:"Syncopate", system-ui, sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            color: rgba(240,195,109,0.85);
+        }
+        .toggle{
+            display:flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .toggle button{
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(57,255,20,0.16);
+            background: rgba(57,255,20,0.06);
+            color: rgba(57,255,20,0.9);
+            cursor:pointer;
+            letter-spacing: 1px;
+        }
+        .toggle button.active{
+            border-color: rgba(240,195,109,0.22);
+            color: rgba(240,195,109,0.92);
+            background: rgba(240,195,109,0.08);
+        }
+        .specImage{
+            position: relative;
+            height: 280px;
+            border-radius: 14px;
+            border: 1px solid rgba(57,255,20,0.12);
+            overflow:hidden;
+        }
+        .specImage .a,.specImage .b,.specImage .c{
+            position:absolute; inset:0;
+            background-size: cover;
+            background-position:center;
+        }
+        .specImage .a{ background-image: url('images/fpv.jpg'); filter: contrast(1.05) brightness(0.75); opacity:1; }
+        .specImage .b{ background-image: url('images/smoke-room.jpg'); filter: saturate(1.4) contrast(1.1); opacity:0; }
+        .specImage .c{ background-image: url('images/tunnel.jpg'); filter: grayscale(1) contrast(1.2) brightness(0.6); opacity:0; }
+
+        /* Night vision cursor mask */
+        .nvMask{
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            pointer-events:none;
+            mask-image: radial-gradient(circle 120px at var(--mx, -100px) var(--my, -100px), transparent 0 60%, black 70% 100%);
+            -webkit-mask-image: radial-gradient(circle 120px at var(--mx, -100px) var(--my, -100px), transparent 0 60%, black 70% 100%);
+        }
+
+        /* Target lock reticles */
+        .reticle{
+            position: fixed;
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,49,49,0.65);
+            border-right: 0; border-bottom: 0;
+            z-index: 55;
+            pointer-events:none;
+            opacity: 0;
+        }
+        .ptz{
+            margin-top: 10px;
+        }
+        .ptzLabel{
+            margin-top: 10px;
+            letter-spacing: 2px;
+            color: rgba(57,255,20,0.85);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="dropdown-page soc-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<div class="rec">
+    <span class="recDot"></span>
+    <span>REC</span>
+    <span id="ts" style="color:rgba(233,223,209,0.75);font-family:'Chakra Petch';letter-spacing:1px;"></span>
+</div>
+<div class="scanSweep"></div>
+<div class="reticle" id="reticle"></div>
+
+<div class="wrap">
+    <section class="hero">
+        <p class="eyebrow">THE ALL-SEEING EYE</p>
+        <h1>TOTAL VISION. ZERO BLIND SPOTS.</h1>
+        <p>Turning the unknown into a high-definition tactical map — thermal, infrared, lidar, and motion alerts across 10+ feeds.</p>
+    </section>
+
+    <section class="monitorWall">
+        <div class="feed"><div class="label">FEED_01 // LIVE</div><div class="data"><span>MODE: NV</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_02 // LIVE</div><div class="data"><span>MODE: THERMAL</span><span style="color:rgba(255,49,49,0.9)">ALERTS: 1</span></div></div>
+        <div class="feed"><div class="label">FEED_03 // LIVE</div><div class="data"><span>MODE: LIDAR</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_04 // LIVE</div><div class="data"><span>MODE: NV</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_05 // LIVE</div><div class="data"><span>MODE: SWIR</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_06 // LIVE</div><div class="data"><span>MODE: THERMAL</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_07 // LIVE</div><div class="data"><span>MODE: NV</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_08 // LIVE</div><div class="data"><span>MODE: LIDAR</span><span>ALERTS: 0</span></div></div>
+        <div class="feed"><div class="label">FEED_09 // LIVE</div><div class="data"><span>MODE: THERMAL</span><span style="color:rgba(255,49,49,0.9)">ALERTS: 2</span></div></div>
+        <div class="feed"><div class="label">FEED_10 // LIVE</div><div class="data"><span>MODE: NV</span><span>ALERTS: 0</span></div></div>
+    </section>
+
+    <section class="multiSpec">
+        <div class="panel">
+            <h2>MULTI-SPECTRAL VISION</h2>
+            <div class="toggle">
+                <button class="active" data-mode="thermal">THERMAL</button>
+                <button data-mode="infrared">INFRARED</button>
+                <button data-mode="night">NIGHT VISION</button>
+            </div>
+            <div class="specImage" id="specImage">
+                <div class="a"></div>
+                <div class="b"></div>
+                <div class="c"></div>
+                <div class="nvMask" id="nvMask"></div>
+            </div>
+            <p style="margin-top:10px;color:rgba(233,223,209,0.78);line-height:1.6;">
+                Cursor spotlight activates in Night Vision mode.
+            </p>
+        </div>
+
+        <div class="panel">
+            <h2>360° PTZ CAMERA</h2>
+            <p style="margin:0 0 10px;color:rgba(233,223,209,0.78);line-height:1.6;">
+                Precision multi-axis sensor turret with smooth gimbal stabilization. Drag to look around.
+            </p>
+            <div class="ptz">
+                <model-viewer id="ptzViewer"
+                    src="3Dmodels/demo.glb"
+                    camera-controls
+                    auto-rotate
+                    exposure="1.1"
+                    shadow-intensity="1"
+                    environment-image="neutral"
+                    style="width:100%;height:300px;border-radius:12px;border:1px solid rgba(57,255,20,0.14);background: radial-gradient(circle at 50% 35%, rgba(57,255,20,0.10), rgba(0,0,0,0.75));">
+                </model-viewer>
+                <div class="ptzLabel">PRECISION MULTI-AXIS SENSOR TURRET</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// REC timestamp (live clock)
+(function recClock(){
+    const el = document.getElementById('ts');
+    if (!el) return;
+    function tick(){
+        const d = new Date();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        const ss = String(d.getSeconds()).padStart(2,'0');
+        el.textContent = `${hh}:${mm}:${ss}`;
+    }
+    tick();
+    setInterval(tick, 1000);
+})();
+
+// Multi-spectral toggle + night-vision cursor mask
+(function multiSpec(){
+    const spec = document.getElementById('specImage');
+    const mask = document.getElementById('nvMask');
+    const btns = document.querySelectorAll('.toggle button');
+    if (!spec || !mask || btns.length === 0) return;
+    const a = spec.querySelector('.a');
+    const b = spec.querySelector('.b');
+    const c = spec.querySelector('.c');
+    let mode = 'thermal';
+    function apply(){
+        a.style.opacity = mode === 'thermal' ? '1' : '0';
+        b.style.opacity = mode === 'infrared' ? '1' : '0';
+        c.style.opacity = mode === 'night' ? '1' : '0';
+        mask.style.display = mode === 'night' ? 'block' : 'none';
+    }
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            mode = btn.dataset.mode;
+            apply();
+        });
+    });
+    spec.addEventListener('mousemove', (e) => {
+        if (mode !== 'night') return;
+        const r = spec.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        mask.style.setProperty('--mx', x + 'px');
+        mask.style.setProperty('--my', y + 'px');
+    });
+    spec.addEventListener('mouseleave', () => {
+        mask.style.setProperty('--mx', '-100px');
+        mask.style.setProperty('--my', '-100px');
+    });
+    apply();
+})();
+
+// Target lock reticle snaps to visible feed closest to viewport center
+(function reticle(){
+    const r = document.getElementById('reticle');
+    const feeds = Array.from(document.querySelectorAll('.feed'));
+    if (!r || feeds.length === 0) return;
+    function tick(){
+        const midY = window.innerHeight * 0.45;
+        let best = null, bestD = 9999;
+        for (const f of feeds){
+            const rect = f.getBoundingClientRect();
+            const cy = rect.top + rect.height/2;
+            const d = Math.abs(cy - midY);
+            if (d < bestD){
+                bestD = d;
+                best = rect;
+            }
+        }
+        if (best){
+            r.style.opacity = bestD < 180 ? '1' : '0';
+            r.style.left = (best.left + 12) + 'px';
+            r.style.top = (best.top + 12) + 'px';
+        }
+        requestAnimationFrame(tick);
+    }
+    tick();
+})();
+</script>
+
+
+</body>
+</html>

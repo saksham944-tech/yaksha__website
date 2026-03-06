@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPS | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <div class="nav-logo">
+                <a href="index.html">YAKSHA</a>
+            </div>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li class="dropdown" id="about-yaksha-dropdown">
+                        <a href="gps.html" id="about-yaksha-link">GPS</a>
+                    </li>
+
+                    <li class="dropdown" id="operations-dropdown">
+                        <a href="camera.html" id="operations-link">Camera</a>
+                    </li>
+
+                    <li class="dropdown" id="technology-dropdown">
+                        <a href="lidar-sensor.html" id="technology-link">Lidar Sensor</a>
+                    </li>
+
+                    <li class="dropdown" id="impact-dropdown">
+                        <a href="gas-sensor.html" id="impact-link">Gas Sensor</a>
+                    </li>
+
+                    <li class="dropdown" id="media-dropdown">
+                        <a href="thermal-sensor.html" id="media-link">Thermal Sensor</a>
+                    </li>
+
+                    <li class="dropdown" id="sensors-dropdown">
+                        <a href="javascript:void(0)">Sensors</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="lidar-sensor.html">Lidar Sensor</a></li>
+                            <li><a href="camera.html">Camera</a></li>
+                            <li><a href="gps.html">GPS</a></li>
+                            <li><a href="gas-sensor.html">Gas Sensor</a></li>
+                            <li><a href="thermal-sensor.html">Thermal Sensor</a></li>
+                        </ul>
+                    </li>
+
+                    <li id="login-logout-btn">
+                        <a href="logout.php" class="login-btn">Logout</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>GPS</h1>
+        <p class="tagline">Global Positioning System</p>
+    </section>
+
+    <!-- CARDS SECTION -->
+    <section style="padding: 80px 15%; background-color: #1a1a1a;">
+        <div class="sensor-cards-grid">
+            <div class="sensor-card">
+                <div class="sensor-card-image">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; font-weight: bold;">NEWS</div>
+                </div>
+                <div class="sensor-card-content">
+                    <h3>News</h3>
+                    <p>Check out recent news about GPS</p>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <div class="sensor-card-image">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; text-align: center; padding: 20px;">Technical<br>Documentation</div>
+                </div>
+                <div class="sensor-card-content">
+                    <h3>Technical Documentation</h3>
+                    <p>All the information needed to develop and build equipment to use the civilian services of GPS and its augmentations</p>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <div class="sensor-card-image">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold;">GPS<br>Services</div>
+                </div>
+                <div class="sensor-card-content">
+                    <h3>GPS Services</h3>
+                    <p>Explore GPS services and applications</p>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <div class="sensor-card-image">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold;">GPS<br>Resources</div>
+                </div>
+                <div class="sensor-card-content">
+                    <h3>GPS Resources</h3>
+                    <p>Access GPS resources and tools</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+// Check if user is logged in
+fetch('check_session.php')
+    .then(response => response.json())
+    .then(data => {
+        if (!data.logged_in) {
+            window.location.href = 'login.html';
+        }
+    })
+    .catch(error => {
+        console.error('Error checking session:', error);
+    });
+
+// Dropdown menu functionality
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        const dropdown = this.nextElementSibling;
+        
+        if (dropdown && dropdown.style.display === 'none') {
+            return;
+        }
+        
+        if (this.href && !this.href.includes('javascript:void(0)')) {
+            return;
+        }
+        
+        e.preventDefault();
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        if (dropdown) {
+            dropdown.style.display =
+                dropdown.style.display === 'flex' ? 'none' : 'flex';
+        }
+    });
+});
+
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+</script>
+
+</body>
+</html>

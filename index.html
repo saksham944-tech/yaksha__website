@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YAKSHA | Rescue & Response</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="home-page">
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <div class="nav-logo">
+                <a href="index.html">YAKSHA</a>
+            </div>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li class="dropdown" id="about-yaksha-dropdown">
+                        <a href="javascript:void(0)" id="about-yaksha-link">About YAKSHA</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="who-we-are.html">Who We Are</a></li>
+                            <li><a href="vision-mission.html">Vision & Mission</a></li>
+                            <li><a href="our-journey.html">Our Journey</a></li>
+                            <li><a href="leadership-team.html">Leadership & Team</a></li>
+                            <li><a href="values-ethics.html">Values & Ethics</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="operations-dropdown">
+                        <a href="javascript:void(0)" id="operations-link">Operations</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="disaster-response.html">Disaster Response</a></li>
+                            <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                            <li><a href="search-recovery.html">Search & Recovery</a></li>
+                            <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                            <li><a href="training-drills.html">Training & Drills</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="technology-dropdown">
+                        <a href="javascript:void(0)" id="technology-link">Technology</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="command-control.html">Command & Control Systems</a></li>
+                            <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                            <li><a href="communication-networks.html">Communication Networks</a></li>
+                            <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                            <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="impact-dropdown">
+                        <a href="javascript:void(0)" id="impact-link">Impact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="missions-completed.html">Missions Completed</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                            <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                            <li><a href="testimonials.html">Testimonials</a></li>
+                            <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="media-dropdown">
+                        <a href="javascript:void(0)" id="media-link">Media</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="gallery.html">Gallery</a></li>
+                            <li><a href="videos.html">Videos</a></li>
+                            <li><a href="press-releases.html">Press Releases</a></li>
+                            <li><a href="news-updates.html">News & Updates</a></li>
+                            <li><a href="events.html">Events</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="get-involved-dropdown">
+                        <a href="javascript:void(0)">Get Involved</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                            <li><a href="partner-with-us.html">Partner With Us</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="donate-support.html">Donate / Support</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="contact-dropdown">
+                        <a href="javascript:void(0)">Contact</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="reach-us.html">Reach Us</a></li>
+                            <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                            <li><a href="locations.html">Locations</a></li>
+                            <li><a href="feedback.html">Feedback</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown" id="sensors-dropdown" style="display: none;">
+                        <a href="javascript:void(0)">Sensors</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="lidar-sensor.html">Lidar Sensor</a></li>
+                            <li><a href="camera.html">Camera</a></li>
+                            <li><a href="gps.html">GPS</a></li>
+                            <li><a href="gas-sensor.html">Gas Sensor</a></li>
+                            <li><a href="thermal-sensor.html">Thermal Sensor</a></li>
+                        </ul>
+                    </li>
+
+                    <li id="login-logout-btn">
+                        <a href="login.html" class="login-btn">Login</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <!-- RADAR OVERLAY -->
+        <div class="yak-radar-overlay">
+            <div class="yak-radar-circle"></div>
+            <div class="yak-radar-line"></div>
+        </div>
+
+        <!-- Optional video background (replace src with your rover clip) -->
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="videos/rover-hero.mp4" type="video/mp4">
+        </video>
+
+        <div class="hero-content">
+            <div class="hero-left-rail">
+                <span class="status-label">SYSTEM STATUS</span>
+                <span class="status-value">ONLINE</span>
+                <span class="status-meta">Response Grid: Active</span>
+            </div>
+
+            <div class="hero-main">
+                <h1>YAKSHA</h1>
+                <p class="tagline">Rapid Response. Responsible Rescue.</p>
+
+                <p class="hero-subtitle">
+                    Built for the unstable and the unreachable.
+                    YAKSHA bridges the gap where traditional rescue ends and 
+                    technology takes the lead.
+                </p>
+
+                <div class="hero-actions">
+                    <button class="btn primary-cta" onclick="location.href='emergency-helpline.html'">
+                        Emergency Request
+                    </button>
+                    <button class="btn ghost-cta" onclick="location.href='who-we-are.html'">
+                        Explore YAKSHA
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-hud">
+                <div class="hud-sweep"></div>
+                <span class="hud-label">Live Scan</span>
+                <div class="scann-line"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT / WHY -->
+    <section class="about reveal">
+        <h2>About YAKSHA</h2>
+        <p>
+            YAKSHA is a mission-driven rescue initiative focused on rapid,
+            responsible, and reliable response during emergencies.
+            We exist to act when every second matters.
+        </p>
+    </section>
+
+    <!-- TECH SHOWCASE -->
+    <section class="tech-showcase reveal">
+        <div class="tech-copy">
+            <h2>The Rover. Your First Responder.</h2>
+            <p>
+                Built for smoke, rubble, and uncertainty. YAKSHA’s rover platform
+                combines AI, multi-sensor perception, and all-terrain mobility
+                to find life faster—without risking more lives.
+            </p>
+            <ul class="tech-list">
+                <li>Multi-spectral sensing: thermal, gas, lidar, and video.</li>
+                <li>Secure live telemetry and operator assist HUD.</li>
+                <li>Designed for harsh, low-visibility environments.</li>
+            </ul>
+        </div>
+
+        <div class="tech-visual">
+            <img src="images/YAKSHA3.png" alt="YAKSHA Rover" class="tech-image">
+        </div>
+
+
+    <!-- WORK -->
+    <section class="work reveal">
+        <h2>What We Do</h2>
+        <ul>
+            <li>Disaster & Emergency Rescue</li>
+            <li>Rapid Response Operations</li>
+            <li>Community Safety Missions</li>
+        </ul>
+    </section>
+
+    <!-- REAL-TIME IMPACT -->
+    <section class="impact reveal">
+        <h2>When seconds count, numbers matter.</h2>
+        <div class="impact-grid">
+            <div class="impact-card">
+                <span class="impact-label">Missions Completed</span>
+                <span class="impact-value impact-counter" data-target="142">0</span>
+            </div>
+            <div class="impact-card">
+                <span class="impact-label">Average Deploy Time (min)</span>
+                <span class="impact-value impact-counter" data-target="7">0</span>
+            </div>
+            <div class="impact-card">
+                <span class="impact-label">Cities Covered</span>
+                <span class="impact-value impact-counter" data-target="18">0</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST / PARTNERS -->
+    <section class="partners reveal">
+        <h2>Trusted in critical environments</h2>
+        <div class="partner-logos">
+            <div class="partner-logo">Agency One</div>
+            <div class="partner-logo">Relief Network</div>
+            <div class="partner-logo">Urban Safety Lab</div>
+            <div class="partner-logo">Fire & Rescue Ops</div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta reveal">
+        <h2>Be a Part of the Mission</h2>
+        <button onclick="location.href='contact.html'">Contact Us</button>
+    </section>
+
+    <!-- Global Emergency FAB -->
+    <button class="emergency-fab" onclick="location.href='emergency-helpline.html'">
+        Emergency Request
+    </button>
+
+<script>
+// Check if user is logged in and update navbar accordingly
+fetch('check_session.php')
+    .then(response => response.json())
+    .then(data => {
+        if (data.logged_in) {
+            // User is logged in - replace navbar items and remove dropdowns
+            // Replace "About YAKSHA" with "GPS" and hide dropdown
+            const aboutDropdown = document.getElementById('about-yaksha-dropdown');
+            const aboutLink = document.getElementById('about-yaksha-link');
+            if (aboutLink) {
+                aboutLink.textContent = 'GPS';
+                aboutLink.href = 'gps.html';
+            }
+            if (aboutDropdown) {
+                const aboutMenu = aboutDropdown.querySelector('.dropdown-menu');
+                if (aboutMenu) {
+                    aboutMenu.style.display = 'none';
+                }
+            }
+            
+            // Replace "Operations" with "Camera" and hide dropdown
+            const operationsDropdown = document.getElementById('operations-dropdown');
+            const operationsLink = document.getElementById('operations-link');
+            if (operationsLink) {
+                operationsLink.textContent = 'Camera';
+                operationsLink.href = 'camera.html';
+            }
+            if (operationsDropdown) {
+                const operationsMenu = operationsDropdown.querySelector('.dropdown-menu');
+                if (operationsMenu) {
+                    operationsMenu.style.display = 'none';
+                }
+            }
+            
+            // Replace "Technology" with "Lidar Sensor" and hide dropdown
+            const technologyDropdown = document.getElementById('technology-dropdown');
+            const technologyLink = document.getElementById('technology-link');
+            if (technologyLink) {
+                technologyLink.textContent = 'Lidar Sensor';
+                technologyLink.href = 'lidar-sensor.html';
+            }
+            if (technologyDropdown) {
+                const technologyMenu = technologyDropdown.querySelector('.dropdown-menu');
+                if (technologyMenu) {
+                    technologyMenu.style.display = 'none';
+                }
+            }
+            
+            // Replace "Impact" with "Gas Sensor" and hide dropdown
+            const impactDropdown = document.getElementById('impact-dropdown');
+            const impactLink = document.getElementById('impact-link');
+            if (impactLink) {
+                impactLink.textContent = 'Gas Sensor';
+                impactLink.href = 'gas-sensor.html';
+            }
+            if (impactDropdown) {
+                const impactMenu = impactDropdown.querySelector('.dropdown-menu');
+                if (impactMenu) {
+                    impactMenu.style.display = 'none';
+                }
+            }
+            
+            // Replace "Media" with "Thermal Sensor" and hide dropdown
+            const mediaDropdown = document.getElementById('media-dropdown');
+            const mediaLink = document.getElementById('media-link');
+            if (mediaLink) {
+                mediaLink.textContent = 'Thermal Sensor';
+                mediaLink.href = 'thermal-sensor.html';
+            }
+            if (mediaDropdown) {
+                const mediaMenu = mediaDropdown.querySelector('.dropdown-menu');
+                if (mediaMenu) {
+                    mediaMenu.style.display = 'none';
+                }
+            }
+            
+            // Hide "Get Involved" dropdown
+            const getInvolvedDropdown = document.getElementById('get-involved-dropdown');
+            if (getInvolvedDropdown) {
+                getInvolvedDropdown.style.display = 'none';
+            }
+            
+            // Hide "Contact" dropdown
+            const contactDropdown = document.getElementById('contact-dropdown');
+            if (contactDropdown) {
+                contactDropdown.style.display = 'none';
+            }
+            
+            // Show Sensors dropdown
+            const sensorsDropdown = document.getElementById('sensors-dropdown');
+            if (sensorsDropdown) {
+                sensorsDropdown.style.display = 'block';
+            }
+            
+            // Update login button to logout
+            const loginLogoutBtn = document.getElementById('login-logout-btn');
+            if (loginLogoutBtn) {
+                loginLogoutBtn.innerHTML = '<a href="logout.php" class="login-btn">Logout</a>';
+            }
+        } else {
+            // User is not logged in - keep original navbar with all dropdowns
+            // Hide Sensors dropdown
+            const sensorsDropdown = document.getElementById('sensors-dropdown');
+            if (sensorsDropdown) {
+                sensorsDropdown.style.display = 'none';
+            }
+            
+            // Show "Get Involved" and "Contact" if they were hidden
+            const getInvolvedDropdown = document.getElementById('get-involved-dropdown');
+            if (getInvolvedDropdown) {
+                getInvolvedDropdown.style.display = 'block';
+            }
+            
+            const contactDropdown = document.getElementById('contact-dropdown');
+            if (contactDropdown) {
+                contactDropdown.style.display = 'block';
+            }
+            
+            // Restore all dropdown menus
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+            allDropdowns.forEach(menu => {
+                menu.style.display = '';
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error checking session:', error);
+        // On error, hide sensors dropdown (default to logged out state)
+        const sensorsDropdown = document.getElementById('sensors-dropdown');
+        if (sensorsDropdown) {
+            sensorsDropdown.style.display = 'none';
+        }
+    });
+
+// Dropdown menu functionality
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        const dropdown = this.nextElementSibling;
+        
+        // If dropdown menu is hidden (display: none), treat as regular link
+        if (dropdown && dropdown.style.display === 'none') {
+            return; // Allow default link behavior
+        }
+        
+        // If link has an href that's not javascript:void(0), allow default behavior
+        if (this.href && !this.href.includes('javascript:void(0)')) {
+            return; // Allow default link behavior
+        }
+        
+        e.preventDefault();
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        if (dropdown) {
+            dropdown.style.display =
+                dropdown.style.display === 'flex' ? 'none' : 'flex';
+        }
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Scroll reveal for home sections
+const revealObserver = new IntersectionObserver(
+    (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    },
+    {
+        threshold: 0.25
+    }
+);
+
+document.querySelectorAll('.reveal').forEach(el => {
+    revealObserver.observe(el);
+});
+
+// Parallax-style hero background movement
+const heroSection = document.querySelector('.home-page .hero');
+if (heroSection) {
+    window.addEventListener('scroll', () => {
+        const offset = window.scrollY * 0.2;
+        heroSection.style.backgroundPositionY = `${-offset}px`;
+    });
+}
+
+// Impact counters
+const counters = document.querySelectorAll('.impact-counter');
+if (counters.length) {
+    const counterObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+
+                const el = entry.target;
+                const target = parseInt(el.getAttribute('data-target') || '0', 10);
+                let current = 0;
+                const duration = 1200;
+                const startTime = performance.now();
+
+                const tick = (now) => {
+                    const progress = Math.min((now - startTime) / duration, 1);
+                    current = Math.floor(target * progress);
+                    el.textContent = current;
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        el.textContent = target;
+                    }
+                };
+
+                requestAnimationFrame(tick);
+                counterObserver.unobserve(el);
+            });
+        },
+        { threshold: 0.4 }
+    );
+
+    counters.forEach(c => counterObserver.observe(c));
+}
+
+</script>
+
+</body>
+</html>

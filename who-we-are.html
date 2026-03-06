@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Who We Are | YAKSHA</title>
+
+    <!-- Shared CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Technical fonts for this page only -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=JetBrains+Mono:wght@400;600&display=swap">
+
+    <!-- model-viewer (kept available if needed elsewhere) -->
+    <script type="module"
+        src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+    </script>
+</head>
+
+<body class="dropdown-page who-we-are-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+                
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- HERO / TERMINAL INTRO -->
+<section class="who-hero">
+    <div class="who-hero-inner">
+        <div class="mission-clock">
+            <span class="mission-clock-label">LIVE MISSION CLOCK</span>
+            <span class="mission-clock-value" id="missionClock">--</span>
+        </div>
+
+        <div class="terminal-heading" id="terminalHeading"
+             data-text="ESTABLISHING CONNECTION... YAKSHA_IDENTITY_CORE: LOADED_">
+        </div>
+
+        <p class="who-sublead">
+            Where the trail ends, YAKSHA begins. We build the eyes that see through smoke
+            and the treads that hold when everything else gives way.
+        </p>
+    </div>
+</section>
+
+<!-- MAIN DOSSIER LAYOUT -->
+<div class="who-layout">
+    <!-- Fixed status sidebar -->
+    <aside class="who-status">
+        <div class="who-status-block">
+            <div class="who-status-label">SYSTEM STATUS</div>
+            <div class="who-status-value">OPERATIONAL</div>
+        </div>
+
+        <div class="who-status-block">
+            <div class="who-status-label">COORDINATES</div>
+            <div class="who-status-coords">
+                <span id="coordLat">LAT: 19.07° N</span>
+                <span id="coordLon">LON: 72.88° E</span>
+            </div>
+        </div>
+
+        <div class="who-status-block">
+            <div class="who-status-label">CONNECTIVITY</div>
+            <div class="who-status-bars">
+                <span class="bar bar-1"></span>
+                <span class="bar bar-2"></span>
+                <span class="bar bar-3"></span>
+                <span class="bar bar-4"></span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="who-main">
+        <!-- 01. Identity -->
+        <section class="who-section">
+            <h2 class="who-section-heading"><span>01</span> Identity: Guardians in the Rubble</h2>
+            <p>
+                In ancient lore, the Yaksha were guardians of the earth—silent sentinels watching
+                over what humans could not see. YAKSHA inherits that name for a modern frontier:
+                collapsed structures, toxic atmospheres, and heat that melts steel.
+            </p>
+            <p>
+                We don’t chase headlines. We build machines that move into places
+                where sending another human would mean adding one more life to the list at risk.
+            </p>
+        </section>
+
+        <!-- 02. The Problem -->
+        <section class="who-section">
+            <h2 class="who-section-heading"><span>02</span> The Problem: Human Limitation</h2>
+            <p>
+                Fire, radiation, structural instability—these aren’t just “difficult conditions.”
+                They are environments designed by physics to reject human presence. Even the best
+                rescue teams are constrained by heat tolerance, breathing time, visibility, and debris.
+            </p>
+            <p>
+                Every minute a responder spends finding a safe path is a minute not spent finding a survivor.
+                Traditional methods accept this as unavoidable lag. We don’t.
+            </p>
+        </section>
+
+        <!-- 03. Synergy -->
+        <section class="who-section">
+            <h2 class="who-section-heading"><span>03</span> Synergy: Human + Machine</h2>
+            <p>
+                YAKSHA is not here to replace rescuers. We are here to give them unbreakable hands,
+                tireless legs, and eyes that do not blink in smoke.
+            </p>
+            <p>
+                Our rovers are built as extensions of the incident commander’s intent: they push ahead
+                into the unknown, mapping risk, streaming multi-spectral data, and turning chaos into
+                a navigable plan. The human stays in command; the machine absorbs the impact.
+            </p>
+        </section>
+
+        <!-- 04. Our DNA + Exploded view -->
+        <section class="who-section who-dna">
+            <div class="who-dna-copy">
+                <h2 class="who-section-heading"><span>04</span> Our DNA: Built at the Intersection</h2>
+                <p>
+                    YAKSHA is a convergence of aerospace engineering, AI research, and field operations.
+                    Our teams have designed systems that orbit the planet, models that predict risk,
+                    and protocols that have been tested in real siren-filled nights.
+                </p>
+
+                <div class="who-pillars">
+                    <div class="who-pillar">
+                        <h3>The Engineers</h3>
+                        <p>
+                            Structures, thermals, and failure modes engineered for 500°C+ exposure and
+                            high‑G impact resilience.
+                        </p>
+                    </div>
+                    <div class="who-pillar">
+                        <h3>The Strategists</h3>
+                        <p>
+                            Former disaster response leads who design systems around incident command
+                            realities—not lab assumptions.
+                        </p>
+                    </div>
+                    <div class="who-pillar">
+                        <h3>The Intelligence</h3>
+                        <p>
+                            Situational AI that fuses lidar, gas, thermal, and video feeds into a single
+                            evolving picture of risk.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="who-specs">
+                    <h3>Operational Specs (Summary)</h3>
+                    <table>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Benchmark</th>
+                        </tr>
+                        <tr>
+                            <td>Deployment Speed</td>
+                            <td><span class="spec-highlight">&lt; 120 seconds</span> from alert to roll-out</td>
+                        </tr>
+                        <tr>
+                            <td>Terrain Rating</td>
+                            <td><span class="spec-highlight">Grade 5</span> (Unstructured / Volcanic)</td>
+                        </tr>
+                        <tr>
+                            <td>Communication</td>
+                            <td>Satellite-linked mesh network with encrypted backhaul</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="who-exploded">
+                <div class="who-3d-model">
+                    <model-viewer
+                        src="3Dmodels/demo.glb"
+                        alt="YAKSHA Rover 3D Model"
+                        camera-controls
+                        auto-rotate
+                        shadow-intensity="1"
+                        exposure="1.2"
+                        environment-image="neutral"
+                        style="width: 100%; height: 500px; background: #1a1a1a; border-radius: 12px;">
+                    </model-viewer>
+                    <p class="who-3d-caption">
+                        Interactive 3D Model - Click & drag to explore the rover
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+// Dropdown behaviour (unchanged)
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Typewriter / terminal heading
+(function () {
+    const el = document.getElementById('terminalHeading');
+    if (!el) return;
+    const fullText = el.getAttribute('data-text') || '';
+    let idx = 0;
+
+    function typeNext() {
+        if (idx <= fullText.length) {
+            el.textContent = fullText.slice(0, idx);
+            idx++;
+            const delay = idx < 10 ? 60 : 28;
+            setTimeout(typeNext, delay);
+        }
+    }
+
+    typeNext();
+})();
+
+// Mission clock - simple "days since last mission" metric
+(function () {
+    const clockEl = document.getElementById('missionClock');
+    if (!clockEl) return;
+
+    // Example last mission date – adjust as needed
+    const lastMission = new Date('2025-12-01T00:00:00Z');
+
+    function updateClock() {
+        const now = new Date();
+        const diffMs = now - lastMission;
+        const days = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+        clockEl.textContent = days + ' days since last mission';
+    }
+
+    updateClock();
+})();
+
+// Status sidebar: pseudo-dynamic coordinates
+(function () {
+    const latEl = document.getElementById('coordLat');
+    const lonEl = document.getElementById('coordLon');
+    if (!latEl || !lonEl) return;
+
+    const baseLat = 19.07;
+    const baseLon = 72.88;
+
+    document.addEventListener('mousemove', (e) => {
+        const nx = e.clientX / window.innerWidth;
+        const ny = e.clientY / window.innerHeight;
+        const lat = (baseLat + (ny - 0.5) * 0.08).toFixed(2);
+        const lon = (baseLon + (nx - 0.5) * 0.08).toFixed(2);
+
+        latEl.textContent = 'LAT: ' + lat + '° N';
+        lonEl.textContent = 'LON: ' + lon + '° E';
+    });
+})();
+</script>
+
+
+</body>
+</html>
+

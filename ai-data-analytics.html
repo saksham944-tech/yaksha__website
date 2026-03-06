@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI & Data Analytics | YAKSHA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        .ai-page{
+            --violet:#8f00ff;
+            --cyan:#b2ffff;
+            --white:#ffffff;
+            background: radial-gradient(circle at 30% 20%, rgba(143,0,255,0.10), transparent 45%),
+                        radial-gradient(circle at 70% 10%, rgba(240,195,109,0.08), transparent 45%),
+                        linear-gradient(180deg, #0c0a08, #16100b);
+            color: var(--yak-text);
+            font-family: Inter, system-ui, sans-serif;
+            overflow-x:hidden;
+        }
+        .ai-page::before{
+            content:"";
+            position:fixed; inset:0;
+            background: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 0);
+            background-size: 4px 4px;
+            opacity: 0.18;
+            pointer-events:none;
+            mix-blend-mode: overlay;
+            z-index:0;
+        }
+        .ai-wrap{ position:relative; z-index:1; }
+        .ai-hero{
+            padding: 140px 5% 70px;
+            display:grid;
+            grid-template-columns: minmax(0,1.2fr) minmax(0,0.8fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .ai-eyebrow{
+            font-family: Michroma, system-ui, sans-serif;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(178,255,255,0.8);
+            font-size: 12px;
+            margin: 0 0 10px;
+        }
+        .ai-hero h1{
+            margin: 0 0 10px;
+            font-family: Michroma, system-ui, sans-serif;
+            letter-spacing: 2px;
+            font-size: clamp(34px, 4vw, 52px);
+            color: rgba(143,0,255,0.9);
+            text-shadow: 0 0 22px rgba(143,0,255,0.18);
+        }
+        .ai-sub{ margin:0; line-height:1.7; color: rgba(233,223,209,0.82); max-width: 720px; }
+        .glass{
+            background: rgba(0,0,0,0.42);
+            border: 1px solid rgba(178,255,255,0.12);
+            border-radius: 14px;
+            padding: 14px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+        }
+        .specs{
+            font-family: Inter, system-ui, sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            color: rgba(233,223,209,0.82);
+        }
+        .specRow{ display:flex; justify-content:space-between; gap:10px; padding: 8px 0; border-bottom: 1px dashed rgba(178,255,255,0.10); }
+        .specRow:last-child{ border-bottom:none; }
+        .specRow .k{ opacity: 0.7; }
+        .specRow .v{ color: rgba(178,255,255,0.85); }
+
+        .rightTicker{
+            position: fixed;
+            right: 10px;
+            top: 120px;
+            width: 220px;
+            height: 320px;
+            overflow: hidden;
+            border: 1px solid rgba(143,0,255,0.18);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.45);
+            font-family: 'Michroma', system-ui, sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: rgba(178,255,255,0.75);
+            padding: 10px;
+            z-index: 40;
+        }
+        @media(max-width: 1100px){ .rightTicker{ display:none; } }
+
+        .particleField{
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events:none;
+        }
+        .section{
+            padding: 0 5% 70px;
+        }
+        .section h2{
+            margin: 0 0 12px;
+            font-family: Michroma, system-ui, sans-serif;
+            letter-spacing: 2px;
+            color: rgba(178,255,255,0.9);
+        }
+        .cards{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+        .card{
+            position:relative;
+            padding: 14px;
+            background: rgba(0,0,0,0.42);
+            border: 1px solid rgba(178,255,255,0.12);
+            border-radius: 14px;
+            overflow:hidden;
+        }
+        .card::before{
+            content:"";
+            position:absolute; inset:0;
+            background: radial-gradient(circle at 20% 20%, rgba(143,0,255,0.18), transparent 55%);
+            opacity: 0.55;
+            pointer-events:none;
+        }
+        .card h3{
+            position:relative;
+            margin: 0 0 8px;
+            color: rgba(240,195,109,0.9);
+            letter-spacing: 1px;
+            font-family: Michroma, system-ui, sans-serif;
+            font-size: 14px;
+        }
+        .card p{ position:relative; margin:0; line-height:1.7; color: rgba(233,223,209,0.78); }
+
+        .detectHero{
+            padding: 0 5% 70px;
+        }
+        .detectStage{
+            position: relative;
+            height: 340px;
+            border-radius: 16px;
+            border: 1px solid rgba(178,255,255,0.12);
+            background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('images/fpv.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow:hidden;
+        }
+        .bbox{
+            position:absolute;
+            border: 1px solid rgba(178,255,255,0.7);
+            color: rgba(178,255,255,0.9);
+            font-family: Michroma, system-ui, sans-serif;
+            letter-spacing: 1px;
+            font-size: 10px;
+            padding: 6px 8px;
+            background: rgba(0,0,0,0.55);
+            animation: snap 2.6s ease-in-out infinite;
+        }
+        .bbox.b1{ top: 18%; left: 14%; width: 220px; height: 120px; }
+        .bbox.b2{ top: 56%; left: 56%; width: 240px; height: 110px; animation-delay: 0.7s; }
+        @keyframes snap { 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(6px,-4px); } }
+
+        .toggleRow{ display:flex; gap:10px; margin-top: 12px; flex-wrap: wrap; }
+        .toggleBtn{
+            background: rgba(143,0,255,0.14);
+            color: rgba(178,255,255,0.9);
+            border: 1px solid rgba(178,255,255,0.14);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor:pointer;
+            font-family: Inter, system-ui, sans-serif;
+            letter-spacing: 1px;
+        }
+        .toggleBtn.active{
+            background: linear-gradient(120deg, rgba(178,255,255,0.22), rgba(240,195,109,0.18));
+            border-color: rgba(178,255,255,0.22);
+        }
+        .eyeStage{
+            position: relative;
+            height: 280px;
+            border-radius: 16px;
+            border: 1px solid rgba(178,255,255,0.12);
+            overflow:hidden;
+        }
+        .eyeA,.eyeB{ position:absolute; inset:0; background-size: cover; background-position:center; }
+        .eyeA{ background-image: url('images/smoke-room.jpg'); filter: contrast(1.05) brightness(0.7); }
+        .eyeB{ background-image: url('images/rubble-gpr.jpg'); filter: contrast(1.1) saturate(1.2); opacity:0; }
+        .scanline{
+            position:absolute; left:0; right:0; height: 2px;
+            background: rgba(178,255,255,0.8);
+            box-shadow: 0 0 18px rgba(178,255,255,0.35);
+            top: -10px;
+            animation: scan 2.6s linear infinite;
+            opacity: 0.25;
+        }
+        @keyframes scan{ to { transform: translateY(300px); } }
+
+        .tree{
+            height: 260px;
+            border-radius: 14px;
+            border: 1px solid rgba(178,255,255,0.12);
+            background: rgba(0,0,0,0.45);
+            overflow:hidden;
+            position:relative;
+        }
+        .tree svg{ position:absolute; inset:0; }
+
+        .charts{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+        }
+        canvas.chart{
+            width:100%;
+            height:240px;
+            border-radius: 14px;
+            border: 1px solid rgba(178,255,255,0.12);
+            background: rgba(0,0,0,0.45);
+        }
+
+        .neural3d{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+            align-items:start;
+        }
+        .nodeCanvas{
+            width:100%;
+            height:320px;
+            border-radius: 14px;
+            border: 1px solid rgba(178,255,255,0.12);
+            background: radial-gradient(circle at 50% 40%, rgba(143,0,255,0.18), rgba(0,0,0,0.7));
+        }
+        .nodeInfo{
+            min-height: 320px;
+        }
+        .pill{
+            display:inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(178,255,255,0.12);
+            background: rgba(0,0,0,0.45);
+            font-family: Michroma;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: rgba(178,255,255,0.82);
+            margin: 0 6px 8px 0;
+            cursor:pointer;
+        }
+
+        .loop{
+            margin-top: 10px;
+            display:grid;
+            gap: 10px;
+        }
+        .loopStep{
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(178,255,255,0.10);
+            background: rgba(0,0,0,0.42);
+        }
+        .loopStep .t{ font-family: Michroma; color: rgba(178,255,255,0.9); letter-spacing: 1px; }
+        .loopStep .d{ margin-top: 4px; color: rgba(233,223,209,0.78); line-height: 1.6; }
+
+        .ctaAI{
+            padding: 0 5% 110px;
+        }
+        .ctaBox{
+            max-width: 980px;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(240,195,109,0.16);
+            border-radius: 14px;
+            padding: 18px;
+        }
+        .ctaBox button{
+            margin-top: 12px;
+            background: linear-gradient(120deg, #f0c36d, #d17a32);
+            color: #0c0a08;
+            border: 0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            cursor:pointer;
+        }
+
+        @media(max-width: 980px){ .ai-hero{ grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="dropdown-page ai-page">
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="index.html">YAKSHA</a>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">About YAKSHA</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="who-we-are.html">Who We Are</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="our-journey.html">Our Journey</a></li>
+                        <li><a href="leadership-team.html">Leadership & Team</a></li>
+                        <li><a href="values-ethics.html">Values & Ethics</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Operations</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="disaster-response.html">Disaster Response</a></li>
+                        <li><a href="emergency-rescue.html">Emergency Rescue</a></li>
+                        <li><a href="search-recovery.html">Search & Recovery</a></li>
+                        <li><a href="company-preparedness.html">Company Preparedness</a></li>
+                        <li><a href="training-drills.html">Training & Drills</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Technology</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="command-control.html">Command & Control Systems</a></li>
+                        <li><a href="ai-data-analytics.html">AI & Data Analytics</a></li>
+                        <li><a href="communication-networks.html">Communication Networks</a></li>
+                        <li><a href="surveillance-monitoring.html">Surveillance & Monitoring</a></li>
+                        <li><a href="equipment-tools.html">Equipment & Tools</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Impact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="missions-completed.html">Missions Completed</a></li>
+                        <li><a href="case-studies.html">Case Studies</a></li>
+                        <li><a href="statistics-reports.html">Statistics & Reports</a></li>
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="awards-recognition.html">Awards & Recognition</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Media</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="videos.html">Videos</a></li>
+                        <li><a href="press-releases.html">Press Releases</a></li>
+                        <li><a href="news-updates.html">News & Updates</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Get Involved</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="join-volunteer.html">Join as Volunteer</a></li>
+                        <li><a href="partner-with-us.html">Partner With Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="donate-support.html">Donate / Support</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Contact</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="reach-us.html">Reach Us</a></li>
+                        <li><a href="emergency-helpline.html">Emergency Helpline</a></li>
+                        <li><a href="locations.html">Locations</a></li>
+                        <li><a href="feedback.html">Feedback</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html" class="login-btn">Login</a>
+                </li>
+
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<canvas class="particleField" id="particleField"></canvas>
+<div class="rightTicker" id="aiTicker"></div>
+
+<div class="ai-wrap">
+    <section class="ai-hero">
+        <div>
+            <p class="ai-eyebrow">THE COGNITIVE LAYER</p>
+            <h1>TURNING CHAOS INTO COORDINATES.</h1>
+            <p class="ai-sub">
+                Advanced Computer Vision and Neural Processing for the world's unpredictable zones.
+                The intelligence lives <strong>on the rover</strong>, not in the cloud.
+            </p>
+        </div>
+        <div class="glass specs">
+            <div class="specRow"><span class="k">Latency</span><span class="v">&lt; 5ms (Local Inference)</span></div>
+            <div class="specRow"><span class="k">Model</span><span class="v">Custom Y-Net (Low-Light / High-Dust)</span></div>
+            <div class="specRow"><span class="k">Data Flow</span><span class="v">1.2 GB / minute mission telemetry</span></div>
+            <div class="specRow"><span class="k">Accuracy</span><span class="v">99.4% life-form classification</span></div>
+        </div>
+    </section>
+
+    <section class="detectHero">
+        <h2>OBJECT DETECTION // BOUNDING BOX TRACKER</h2>
+        <div class="detectStage">
+            <div class="bbox b1">98% CONFIDENCE: HUMAN_SIGNATURE</div>
+            <div class="bbox b2">85% CONFIDENCE: STRUCTURAL_WEAKNESS</div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>EDGE INTELLIGENCE</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>Decision Making at the Source</h3>
+                <p>No cloud dependency. When infrastructure collapses, cognition stays alive.</p>
+            </div>
+            <div class="card">
+                <h3>Thermal Interpretation</h3>
+                <p>Filters smoke noise to pull biological signatures from thermal gradients.</p>
+            </div>
+            <div class="card">
+                <h3>Dust-Resilient Vision</h3>
+                <p>Multi-sensor fusion boosts confidence when cameras become unreliable.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>TOGGLE VIEW // HUMAN EYE vs YAKSHA EYE</h2>
+        <div class="glass">
+            <div class="eyeStage" id="eyeStage">
+                <div class="eyeA"></div>
+                <div class="eyeB" id="eyeB"></div>
+                <div class="scanline"></div>
+            </div>
+            <div class="toggleRow">
+                <button class="toggleBtn active" data-eye="human">View A: Human Eye</button>
+                <button class="toggleBtn" data-eye="yaksha">View B: YAKSHA Eye</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>PREDICTIVE PATHING</h2>
+        <div class="cards" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr);">
+            <div class="card">
+                <h3>Calculating the Next Move</h3>
+                <p>Predicts collapse probability and selects paths that preserve the survivor pocket.</p>
+                <div class="tree" id="tree"></div>
+            </div>
+            <div class="card">
+                <h3>Learning Loop</h3>
+                <div class="loop">
+                    <div class="loopStep"><div class="t">Encounter</div><div class="d">Rover faces unknown obstacle (deep mud).</div></div>
+                    <div class="loopStep"><div class="t">Analysis</div><div class="d">Sensors record failure/success signals.</div></div>
+                    <div class="loopStep"><div class="t">Optimization</div><div class="d">Data feeds back into YAKSHA-Net.</div></div>
+                    <div class="loopStep"><div class="t">Evolution</div><div class="d">Fleet updates via secure satellite sync.</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>MISSION ANALYTICS</h2>
+        <div class="charts">
+            <canvas class="chart" id="barChart"></canvas>
+            <canvas class="chart" id="heatChart"></canvas>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>THE NEURAL NODE // COGNITION ENGINE v5.0</h2>
+        <div class="neural3d">
+            <canvas class="nodeCanvas" id="nodeCanvas"></canvas>
+            <div class="glass nodeInfo" id="nodeInfo">
+                <p class="ai-eyebrow" style="margin-bottom:10px;">CLICK A NODE</p>
+                <div>
+                    <span class="pill" data-cap="Thermal Interpretation">THERMAL</span>
+                    <span class="pill" data-cap="Low-Light Vision">LOW-LIGHT</span>
+                    <span class="pill" data-cap="Path Prediction">PREDICTIVE</span>
+                    <span class="pill" data-cap="Life-Form Classification">LIFE-SIGN</span>
+                </div>
+                <p style="margin-top:10px;color:rgba(233,223,209,0.82);line-height:1.7;" id="capText">
+                    Elastic connectivity: nodes expand and snap back like living synapses.
+                </p>
+                <model-viewer
+                    src="3Dmodels/demo.glb"
+                    camera-controls
+                    auto-rotate
+                    exposure="1.15"
+                    shadow-intensity="1"
+                    environment-image="neutral"
+                    style="width:100%;height:220px;margin-top:12px;border-radius:12px;border:1px solid rgba(178,255,255,0.12);background: radial-gradient(circle at 40% 30%, rgba(143,0,255,0.18), rgba(0,0,0,0.7));">
+                </model-viewer>
+            </div>
+        </div>
+    </section>
+
+    <section class="ctaAI">
+        <div class="ctaBox">
+            <h2 style="margin:0 0 6px;font-family:Michroma;color:rgba(178,255,255,0.9);">MISSION INTELLIGENCE, POST-MISSION POWER</h2>
+            <p style="margin:0;color:rgba(233,223,209,0.78);line-height:1.7;">
+                Analytics becomes future safety protocol: structural patterns, heat maps, and risk signatures.
+            </p>
+            <button onclick="location.href='contact.html'">REQUEST TECHNICAL DEMO</button>
+        </div>
+    </section>
+</div>
+
+<script>
+document.querySelectorAll('.dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const dropdown = this.nextElementSibling;
+
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.style.display = 'none';
+            }
+        });
+
+        dropdown.style.display =
+            dropdown.style.display === 'flex' ? 'none' : 'flex';
+    });
+});
+
+// CLOSE dropdown when clicking outside navbar
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.navbar')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+
+// Live logic ticker
+(function ticker(){
+    const el = document.getElementById('aiTicker');
+    if (!el) return;
+    const lines = [
+        'ANALYZING_TERRAIN...',
+        'HEAT_SIG_DETECTED...',
+        'CALCULATING_OPTIMAL_TREAD_TORQUE...',
+        'FUSING_LIDAR_THERMAL...',
+        'NOISE_FILTER: ACTIVE',
+        'CLASSIFIER: HUMAN_SIGNATURE 0.994',
+        'PATH_RISK: 0.18',
+        'EDGE_INFERENCE: OK'
+    ];
+    let idx = 0;
+    setInterval(() => {
+        const d = document.createElement('div');
+        d.textContent = lines[idx % lines.length];
+        el.appendChild(d);
+        el.scrollTop = el.scrollHeight;
+        idx++;
+        if (el.childNodes.length > 40) el.removeChild(el.firstChild);
+    }, 220);
+})();
+
+// Mouse-follow particles
+(function particles(){
+    const c = document.getElementById('particleField');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const pts = Array.from({length: 520}).map(() => ({
+        x: Math.random(), y: Math.random(),
+        vx: 0, vy: 0,
+        a: 0.25 + Math.random()*0.55
+    }));
+    let mx = 0.5, my = 0.5;
+    window.addEventListener('mousemove', (e) => {
+        mx = e.clientX / window.innerWidth;
+        my = e.clientY / window.innerHeight;
+    });
+    function draw(){
+        const w = c.width = window.innerWidth;
+        const h = c.height = window.innerHeight;
+        ctx.clearRect(0,0,w,h);
+        for (const p of pts){
+            const dx = mx - p.x;
+            const dy = my - p.y;
+            const d = Math.max(0.02, Math.hypot(dx,dy));
+            const pull = 0.00055 / d;
+            p.vx += dx * pull;
+            p.vy += dy * pull;
+            p.vx *= 0.96;
+            p.vy *= 0.96;
+            p.x += p.vx;
+            p.y += p.vy;
+            // wrap
+            if (p.x < 0) p.x += 1;
+            if (p.x > 1) p.x -= 1;
+            if (p.y < 0) p.y += 1;
+            if (p.y > 1) p.y -= 1;
+
+            ctx.fillStyle = `rgba(178,255,255,${p.a * 0.08})`;
+            ctx.beginPath();
+            ctx.arc(p.x*w, p.y*h, 1.5, 0, Math.PI*2);
+            ctx.fill();
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+// Toggle view A/B
+(function toggleEye(){
+    const eyeB = document.getElementById('eyeB');
+    const btns = document.querySelectorAll('.toggleBtn');
+    if (!eyeB || btns.length === 0) return;
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const mode = btn.dataset.eye;
+            eyeB.style.opacity = mode === 'yaksha' ? '1' : '0';
+        });
+    });
+})();
+
+// Predictive tree diagram
+(function tree(){
+    const host = document.getElementById('tree');
+    if (!host) return;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 100 100');
+    svg.innerHTML = `
+        <g stroke="rgba(178,255,255,0.22)" stroke-width="0.7" fill="none">
+            <path d="M50 10 L30 35 L18 60" />
+            <path d="M50 10 L30 35 L30 65" />
+            <path d="M50 10 L30 35 L42 60" />
+            <path d="M50 10 L70 35 L58 60" />
+            <path d="M50 10 L70 35 L70 65" />
+            <path d="M50 10 L70 35 L82 60" />
+        </g>
+        <g fill="rgba(143,0,255,0.85)">
+            <circle cx="50" cy="10" r="2.2"/>
+            <circle cx="30" cy="35" r="2.2"/>
+            <circle cx="70" cy="35" r="2.2"/>
+        </g>
+        <g fill="rgba(240,195,109,0.85)">
+            <circle cx="18" cy="60" r="2.0"/>
+            <circle cx="30" cy="65" r="2.0"/>
+            <circle cx="42" cy="60" r="2.0"/>
+            <circle cx="58" cy="60" r="2.0"/>
+            <circle cx="70" cy="65" r="2.0"/>
+            <circle cx="82" cy="60" r="2.0"/>
+        </g>
+        <g id="pulse" fill="rgba(178,255,255,0.9)">
+            <circle cx="50" cy="10" r="1.2"/>
+        </g>
+    `;
+    host.appendChild(svg);
+    const pulse = svg.querySelector('#pulse circle');
+    const points = [
+        {x:50,y:10},{x:30,y:35},{x:18,y:60},
+        {x:30,y:35},{x:30,y:65},
+        {x:50,y:10},{x:70,y:35},{x:82,y:60},
+        {x:70,y:35},{x:70,y:65}
+    ];
+    let i = 0;
+    setInterval(() => {
+        const p = points[i % points.length];
+        pulse.setAttribute('cx', p.x);
+        pulse.setAttribute('cy', p.y);
+        i++;
+    }, 360);
+})();
+
+// Charts: bar + heat map
+(function charts(){
+    const bar = document.getElementById('barChart');
+    const heat = document.getElementById('heatChart');
+    if (!bar || !heat) return;
+
+    function drawBar(){
+        const ctx = bar.getContext('2d');
+        const w = bar.width = bar.clientWidth;
+        const h = bar.height = bar.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        const values = [0.72, 0.55, 0.88, 0.64, 0.77, 0.91];
+        const labels = ['ZONE A','ZONE B','ZONE C','ZONE D','ZONE E','ZONE F'];
+        const pad = 22;
+        const bw = (w - pad*2) / values.length;
+        ctx.font = '12px Inter';
+        ctx.fillStyle = 'rgba(233,223,209,0.65)';
+        ctx.fillText('POST-MISSION HEAT SIGNATURES', pad, 18);
+        for (let i=0;i<values.length;i++){
+            const x = pad + i*bw + 10;
+            const bh = values[i] * (h-60);
+            const y = h-24 - bh;
+            const grad = ctx.createLinearGradient(0,y,0,y+bh);
+            grad.addColorStop(0,'rgba(178,255,255,0.55)');
+            grad.addColorStop(1,'rgba(143,0,255,0.55)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(x, y, bw-20, bh);
+            ctx.fillStyle = 'rgba(240,195,109,0.8)';
+            ctx.fillText(labels[i], x, h-8);
+        }
+    }
+
+    function drawHeat(){
+        const ctx = heat.getContext('2d');
+        const w = heat.width = heat.clientWidth;
+        const h = heat.height = heat.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        ctx.fillStyle = 'rgba(233,223,209,0.65)';
+        ctx.font = '12px Inter';
+        ctx.fillText('MISSION ZONE RISK HEAT MAP', 18, 18);
+        const cols = 18, rows = 9;
+        for (let y=0;y<rows;y++){
+            for (let x=0;x<cols;x++){
+                const v = Math.random();
+                const r = 240, g = 195, b = 109;
+                const a = 0.08 + v*0.35;
+                ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
+                ctx.fillRect(18 + x*((w-36)/cols), 32 + y*((h-50)/rows), (w-36)/cols - 2, (h-50)/rows - 2);
+            }
+        }
+        // overlay violet "intelligence" hotspots
+        for (let k=0;k<5;k++){
+            ctx.fillStyle = 'rgba(143,0,255,0.18)';
+            ctx.beginPath();
+            ctx.arc(40 + Math.random()*(w-80), 50 + Math.random()*(h-90), 18 + Math.random()*22, 0, Math.PI*2);
+            ctx.fill();
+        }
+    }
+
+    drawBar(); drawHeat();
+    window.addEventListener('resize', () => { drawBar(); drawHeat(); });
+})();
+
+// Neural node canvas (click nodes to expand capability)
+(function neuralNode(){
+    const c = document.getElementById('nodeCanvas');
+    const capText = document.getElementById('capText');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const nodes = Array.from({length: 24}).map((_,i) => ({
+        x: Math.random(), y: Math.random(),
+        r: 0.012 + Math.random()*0.01,
+        vx: (Math.random()-0.5)*0.0008,
+        vy: (Math.random()-0.5)*0.0008,
+        cap: i % 4
+    }));
+    const caps = ['Thermal Interpretation','Low-Light Vision','Path Prediction','Life-Form Classification'];
+    let selected = null;
+
+    function draw(){
+        const w = c.width = c.clientWidth;
+        const h = c.height = c.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        // links
+        for (let i=0;i<nodes.length;i++){
+            for (let j=i+1;j<nodes.length;j++){
+                const a = nodes[i], b = nodes[j];
+                const dx = a.x-b.x, dy=a.y-b.y;
+                const d = Math.hypot(dx,dy);
+                if (d < 0.22){
+                    ctx.strokeStyle = `rgba(178,255,255,${0.18 - d*0.6})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x*w, a.y*h);
+                    ctx.lineTo(b.x*w, b.y*h);
+                    ctx.stroke();
+                }
+            }
+        }
+        // nodes
+        for (const n of nodes){
+            ctx.fillStyle = n === selected ? 'rgba(240,195,109,0.95)' : 'rgba(178,255,255,0.75)';
+            ctx.beginPath();
+            ctx.arc(n.x*w, n.y*h, (n.r*(n===selected?2.2:1.0))*Math.min(w,h), 0, Math.PI*2);
+            ctx.fill();
+        }
+        // move
+        for (const n of nodes){
+            n.x += n.vx; n.y += n.vy;
+            if (n.x < 0.05 || n.x > 0.95) n.vx *= -1;
+            if (n.y < 0.08 || n.y > 0.92) n.vy *= -1;
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    c.addEventListener('click', (e) => {
+        const rect = c.getBoundingClientRect();
+        const x = (e.clientX - rect.left)/rect.width;
+        const y = (e.clientY - rect.top)/rect.height;
+        let best = null, bestD = 999;
+        for (const n of nodes){
+            const d = Math.hypot(n.x-x, n.y-y);
+            if (d < bestD){
+                bestD = d; best = n;
+            }
+        }
+        if (best && bestD < 0.08){
+            selected = best;
+            if (capText) capText.textContent = 'Selected: ' + caps[best.cap] + ' // Elastic connectivity engaged.';
+        }
+    });
+
+    document.querySelectorAll('.pill').forEach(p => {
+        p.addEventListener('click', () => {
+            const cap = p.getAttribute('data-cap');
+            if (capText) capText.textContent = 'Selected: ' + cap + ' // Elastic connectivity engaged.';
+        });
+    });
+})();
+</script>
+</body>
+</html>

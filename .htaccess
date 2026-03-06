@@ -1,0 +1,7 @@
+# (Auth protection for HTML pages is disabled so that
+# all navbar links behave like normal static pages.)
+RewriteEngine On
+
+# If you later want to protect specific pages, add
+# targeted RewriteRule entries here instead of a
+# blanket rule for all .html files.
