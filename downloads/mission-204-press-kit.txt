@@ -1,0 +1,13 @@
+YAKSHA PRESS KIT (POC)
+======================
+
+MISSION: 204 — Structural Breach Success
+STATUS: RESOLVED
+
+Contents:
+- High-resolution photos: (placeholder)
+- Mission report: (placeholder)
+- Media contact: press@yaksha.example
+
+Note: This is a proof-of-concept download stub for the website UI.
+

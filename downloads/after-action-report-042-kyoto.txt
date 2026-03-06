@@ -1,0 +1,12 @@
+YAKSHA AFTER-ACTION REPORT (POC)
+================================
+
+Mission ID: 042-Kyoto
+Document: Technical Debrief Summary (placeholder)
+Size: 12.4 MB (simulated in UI)
+
+Summary:
+- Constraints: Connectivity loss due to shielding; unstable rubble.
+- Solution: Mesh-link relay + thermal signature confirmation.
+- Outcome: Extraction path verified; human team signaled.
+
